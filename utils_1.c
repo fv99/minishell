@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:46:54 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/05/30 16:19:42 by x230             ###   ########.fr       */
+/*   Updated: 2023/05/30 17:06:46 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,40 +47,16 @@ char	*ft_strcat(char *dest, char *src)
 	return (dest);
 }
 
-// Helper function to check if character is a delimiter
-bool is_delimiter(char c, const char *delims)
-{
-    while (*delims != '\0')
-	{
-        if (c == *delims)
-            return true;
-        delims++;
-    }
-    return false;
-}
-
-// Updated strtok function
-char *ft_strtok(char *str, const char *delims)
-{
-    static char *stock = NULL;
-    char *ptr = NULL;
-    bool found_token = false;
-
-    if (str != NULL)
-        stock = str;
-    while (*stock != '\0') {
-        if (!found_token && !is_delimiter(*stock, delims)) 
-		{
-            found_token = true;
-            ptr = stock;
-        } 
-		else if (found_token && is_delimiter(*stock, delims)) 
-		{
-            *stock = '\0';
-            stock += 1;
-            break;
-        }
-        stock++;
-    }
-    return (ptr);
-}
+char    *ft_strcpy(char *s1, char *s2)
+  {
+      int i;
+ 
+      i = 0;
+      while (s2[i])
+      {
+          s1[i] = s2[i];
+          i++;
+      }
+      s1[i] = s2[i];
+      return (s1);
+  }

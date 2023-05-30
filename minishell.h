@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/05/30 16:20:49 by x230             ###   ########.fr       */
+/*   Updated: 2023/05/30 17:06:56 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ void	free_array(char	**ptr);
 
 char	*ft_strcat(char *dest, char *src);
 
+char    *ft_strcpy(char *s1, char *s2);
+
+// utils_2.c
+
 bool	is_delimiter(char c, const char *delims);
 
 char	*ft_strtok(char *str, const char *delims);
@@ -49,7 +53,6 @@ void    shell_loop(void);
 
 // test_functions.c
 
-void    test_parse_line(char *line);
-
+void 	test_parse_line(char **tokens);
 
 #endif

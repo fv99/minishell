@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/05/30 16:36:59 by x230             ###   ########.fr       */
+/*   Updated: 2023/05/30 17:04:37 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,10 @@ void    shell_loop(void)
             break;
 		// have call to save to history here
 		args = split_line(line);
-		test_parse_line(line);
+		test_parse_line(args);
 		// set status according to command execution, implement this later
+		free_array(args);
+		free(line);
 		status = 0;
 	}
-	free_array(args);
 }

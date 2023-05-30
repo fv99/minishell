@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:38:20 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/05/30 16:39:48 by x230             ###   ########.fr       */
+/*   Updated: 2023/05/30 17:07:42 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	**split_line(char *line)
 	while (token != NULL)
 	{
 		tokens[i] = malloc(sizeof(char) * (ft_strlen(token) + 1));
-		ft_strlcpy(tokens[i], token, ft_strlen(token));
+		ft_strcpy(tokens[i], token);
 		token = ft_strtok(NULL, DELIMS);
 		i++;
 	}
