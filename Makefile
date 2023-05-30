@@ -3,17 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+         #
+#    By: x230 <x230@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/19 12:15:10 by fvonsovs          #+#    #+#              #
-#    Updated: 2023/05/19 12:48:52 by fvonsovs         ###   ########.fr        #
+#    Updated: 2023/05/30 16:21:54 by x230             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC			=	gcc
-CFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g
+CFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g -L/usr/include -lreadline
 NAME		=	minishell
-SRCS		=	main.c parser_lines.c utils_1.c
+SRCS		=	main.c minishell.c parser_lines.c utils_1.c test_functions.c
 OBJS		=	${SRCS:.c=.o}
 LIBC		=	ar -cq
 RM			=	rm -f
@@ -39,13 +38,13 @@ $(NAME): ${OBJS}
 
 clean: 
 	@echo "$(YELLOW)Removing object files...$(RESET)"
-	clean -C ./libft
-	@${RM} ${OBJS} ${BONUS_OBJS}
+	make clean -C ./libft
+	@${RM} ${OBJS}
 
 fclean: clean
 	@echo "$(YELLOW)Removing executable...$(RESET)"
-	fclean -C ./libft
-	@${RM} ${NAME} ${BONUS_NAME}
+	make fclean -C ./libft
+	@${RM} ${NAME}
 
 re: fclean all
 
