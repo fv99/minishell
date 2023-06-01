@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/05/30 17:06:56 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/01 14:17:40 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,12 @@ char	*ft_strtok(char *str, const char *delims);
 // minishell.c
 
 void    shell_loop(void);
+
+int		execute(char **args, char **envp);
+
+char	*get_path(char *cmd, char **envp);
+
+char	*get_path_token(char *cmd, char *path_env, int cmd_len);
 
 // test_functions.c
 
