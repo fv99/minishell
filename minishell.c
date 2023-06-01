@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/01 14:20:01 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/01 14:52:40 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,19 +34,37 @@ void    shell_loop(void)
 		args = split_line(line);
 		// test_parse_line(args);
 		status = execute(args, __environ);	// handle this better - make func for separating the line
+		free_array(args);
+		free(line);
 	}
-	free_array(args);
-	free(line);
 }
 
 // need to make it so args passed are only until pipe or other delim
 int	execute(char **args, char **envp)
 {
 	char	*path;
+	pid_t pid;
+	int status;
 
 	path = get_path(args[0], envp);
-	if (execve(path, args, envp) == -1)
-		ft_printf("Command not found: %s \n", args[0]);
+	pid = fork();
+	if (pid == 0)
+	{
+		// child process
+		if (execve(path, args, envp) == -1)
+		{
+			ft_printf("Command not found: %s \n", args[0]);
+			exit(EXIT_FAILURE);
+		}
+	}
+	else if (pid < 0)
+		you_fucked_up("Fork failed");
+	else
+	{
+		while (!WIFEXITED(status) && !WIFSIGNALED(status))
+			waitpid(pid, &status, WUNTRACED); 		// parent process
+	}
+	free(path);
 	return (1);
 }
 
