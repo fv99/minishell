@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/07 14:27:16 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/07 14:52:20 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,12 @@ void    shell_loop(void)
             add_history(line);
 		args = split_line(line);
 		// test_parse_line(args);
+		if (check_builtins(args))
+        {
+            free_array(args);
+            free(line);
+            continue;
+        }
 		status = execute(args, __environ);	// handle this better - make func for separating the line
 		free_array(args);
 		free(line);
@@ -48,7 +54,6 @@ int	execute(char **args, char **envp)
 	pid_t pid;
 	int status;
 
-	check_builtins(args[0]);
 	path = get_path(args[0], envp);
 	pid = fork();
 	if (pid == 0)
