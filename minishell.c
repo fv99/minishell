@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/02 14:38:43 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/07 14:27:16 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ int	execute(char **args, char **envp)
 	pid_t pid;
 	int status;
 
+	check_builtins(args[0]);
 	path = get_path(args[0], envp);
 	pid = fork();
 	if (pid == 0)
