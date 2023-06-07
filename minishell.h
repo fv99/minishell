@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/01 14:17:40 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/07 14:45:50 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ char	*ft_strcat(char *dest, char *src);
 
 char    *ft_strcpy(char *s1, char *s2);
 
+int		ft_strcmp(char *s1, char *s2);
+
 // utils_2.c
 
 bool	is_delimiter(char c, const char *delims);
@@ -56,6 +58,14 @@ int		execute(char **args, char **envp);
 char	*get_path(char *cmd, char **envp);
 
 char	*get_path_token(char *cmd, char *path_env, int cmd_len);
+
+// builtins_1.c
+
+int		check_builtins(char **args);
+
+int		builtin_exit(void);
+
+int		builtin_cd(char **args);
 
 // test_functions.c
 

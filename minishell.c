@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/01 14:52:40 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/07 14:52:20 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,15 @@
 #define LINE_SIZE 1024
 #define PATH_SEP ":"
 
+#define EXEC_ERROR 42
+
 // main loop to run the shell
 void    shell_loop(void)
 {
     char    *line;
     char    **args;
     int     status;
-	extern char **__environ;
+	extern char **__environ;	// our only global variable ?
 
 	status = 1;
 	while (status)
@@ -33,6 +35,12 @@ void    shell_loop(void)
             add_history(line);
 		args = split_line(line);
 		// test_parse_line(args);
+		if (check_builtins(args))
+        {
+            free_array(args);
+            free(line);
+            continue;
+        }
 		status = execute(args, __environ);	// handle this better - make func for separating the line
 		free_array(args);
 		free(line);
@@ -53,16 +61,18 @@ int	execute(char **args, char **envp)
 		// child process
 		if (execve(path, args, envp) == -1)
 		{
-			ft_printf("Command not found: %s \n", args[0]);
-			exit(EXIT_FAILURE);
+			free(path);
+			exit(EXEC_ERROR);
 		}
 	}
 	else if (pid < 0)
 		you_fucked_up("Fork failed");
 	else
 	{
-		while (!WIFEXITED(status) && !WIFSIGNALED(status))
-			waitpid(pid, &status, WUNTRACED); 		// parent process
+		// parent process
+		waitpid(pid, &status, WUNTRACED);
+		if (WIFEXITED(status) && WEXITSTATUS(status) == EXEC_ERROR)
+			ft_printf("Command not found: %s \n", args[0]);
 	}
 	free(path);
 	return (1);
@@ -90,6 +100,8 @@ char	*get_path(char *cmd, char **envp)
 		}
 		i++;
 	}
+	if (path_env == NULL) // if PATH= was not found in envp
+		return NULL;
 	path = get_path_token(cmd, path_env, cmd_len);
 	return (path);
 }
