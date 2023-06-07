@@ -1,37 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_lines.c                                     :+:      :+:    :+:   */
+/*   builtins_1.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/19 12:38:20 by fvonsovs          #+#    #+#             */
+/*   Created: 2023/06/02 15:02:20 by x230              #+#    #+#             */
 /*   Updated: 2023/06/07 14:30:01 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#define DELIMS " \t\r\n"
-#define BUFSIZE 128 //sets malloc size, change as needed
 
-// splits line according to delimiters with strtok
-char	**split_line(char *line)
+// function that will check if a builtin is called
+void	check_builtins(char *arg)
 {
-	int		i;
-	char	**tokens;
-	char	*token;
+	if (!ft_strcmp(arg, "exit"))
+		builtin_exit();
 
-	i = 0;
-	tokens = malloc(sizeof(char *) * BUFSIZE);
-	token = ft_strtok(line, DELIMS);
-	while (token != NULL)
-	{
-		tokens[i] = malloc(sizeof(char) * (ft_strlen(token) + 1));
-		ft_strcpy(tokens[i], token);
-		token = ft_strtok(NULL, DELIMS);
-		i++;
-	}
-	tokens[i] = NULL;
-	return (tokens);
 }
 
+int builtin_exit(void)
+{
+    // add cleanupfunctionality before exiting the shell?
+    exit(0);
+}
