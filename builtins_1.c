@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 15:02:20 by x230              #+#    #+#             */
-/*   Updated: 2023/06/07 15:42:45 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/07 15:49:11 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ int	check_builtins(char **args)
 		return(builtin_cd(args));
 	if (!ft_strcmp(args[0], "pwd"))
 		return(builtin_pwd());
+	if (!ft_strcmp(args[0], "echo"))
+		return(builtin_echo(args));
 	return (0);
 }
 
