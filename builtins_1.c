@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 15:02:20 by x230              #+#    #+#             */
-/*   Updated: 2023/06/07 15:36:30 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/07 15:42:45 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ int	check_builtins(char **args)
 		return(builtin_exit());
 	if (!ft_strcmp(args[0], "cd"))
 		return(builtin_cd(args));
+	if (!ft_strcmp(args[0], "pwd"))
+		return(builtin_pwd());
 	return (0);
 }
 
@@ -68,3 +70,16 @@ char *builtin_cd_expand_home(char **args, char *home_dir)
 	// printf("expanded dir: %s\n", expanded);
 	return(expanded);
 }
+
+int	builtin_pwd(void)
+{
+	char dir[1024]; // make bigger if needed
+
+	if (getcwd(dir, sizeof(dir)) == NULL)
+	{
+		perror("pwd");
+		return (-1);
+	}
+	printf("%s\n", dir);
+	return (1);
+} 

@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/07 15:32:15 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/07 15:43:22 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ int		builtin_cd(char **args);
 
 char	*builtin_cd_expand_home(char **args, char *home_dir);
 
+int		builtin_pwd(void);
 
 // test_functions.c
 
