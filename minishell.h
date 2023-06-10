@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/07 15:53:53 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/07 16:32:44 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char	*get_path_token(char *cmd, char *path_env, int cmd_len);
 
 // builtins_1.c
 
-int		check_builtins(char **args);
+int		check_builtins(char **args, char **envp);
 
 int		builtin_exit(void);
 
@@ -74,6 +74,8 @@ int		builtin_pwd(void);
 // builtins_2.c
 
 int		builtin_echo(char **args);
+
+int		builtin_export(char **args, char **envp);
 
 
 // test_functions.c

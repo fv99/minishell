@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/07 14:52:20 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/07 16:32:10 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void    shell_loop(void)
             add_history(line);
 		args = split_line(line);
 		// test_parse_line(args);
-		if (check_builtins(args))
+		if (check_builtins(args, __environ))
         {
             free_array(args);
             free(line);
