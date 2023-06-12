@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/12 13:06:05 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/12 13:47:37 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct command
 {
 	char	**args;
 	ops		op;
+	struct command *next;
 }	command;
 
 
@@ -98,6 +99,13 @@ int		builtin_echo(char **args);
 
 int		builtin_export(char **args, char **envp);
 
+// pipex.c
+
+void	here_doc(command *cmd);
+
+void	here_doc_exec(char **argv, int *pid_fd);
+
+void	pipex(command *cmd, char **envp);
 
 // test_functions.c
 

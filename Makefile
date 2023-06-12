@@ -3,17 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: x230 <x230@student.42.fr>                  +#+  +:+       +#+         #
+#    By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/19 12:15:10 by fvonsovs          #+#    #+#              #
-#    Updated: 2023/06/07 15:44:11 by x230             ###   ########.fr        #
+#    Updated: 2023/06/12 14:00:06 by fvonsovs         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g -L/usr/include -lreadline
 NAME		=	minishell
 SRCS		=	main.c minishell.c parser_lines.c utils_1.c utils_2.c \
-				builtins_1.c builtins_2.c test_functions.c
+				builtins_1.c builtins_2.c  test_functions.c
 OBJS		=	${SRCS:.c=.o}
 LIBC		=	ar -cq
 RM			=	rm -f

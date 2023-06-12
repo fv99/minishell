@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_lines.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:38:20 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/12 13:01:38 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/12 14:02:44 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 #define DELIMS " \t\r\n"
 #define BUFSIZE 128 //sets malloc size, change as needed
 
-// assumes | is always surrounded by spaces
-// todo: add redirects
+// assumes | is always between spaces
 command	**split_line(char *line)
 {
 	command **cmds;
@@ -29,21 +28,15 @@ command	**split_line(char *line)
 	while (cmdline != NULL)
 	{
 		cmd = malloc(sizeof(command));
-		cmd->args = split_args(cmdline);
+		cmd->args = split_args(cmdline, &(cmd->op));
 		cmdline = ft_strtok(NULL, "|");
-		if (cmdline != NULL)
-			cmd->op = PIPE;
-		else
-			cmd->op = NONE;
 		cmds[i++] = cmd;
 	}
 	cmds[i] = NULL;
 	return (cmds);
 }
 
-// modified split_line from below
-// splits according to delims 
-char	**split_args(char *line)
+char	**split_args(char *line, ops *op)
 {
 	int		i;
 	char	**tokens;
@@ -51,16 +44,25 @@ char	**split_args(char *line)
 
 	i = 0;
 	tokens = malloc(sizeof(char *) * BUFSIZE);
-	token = ft_strtok(line, DELIMS);
+	token = ft_strtok(line, " \t\r\n\a"); // we're going to handle operators separately
 	while (token != NULL)
 	{
-		tokens[i] = ft_strdup(token);
-		token = ft_strtok(NULL, DELIMS);
-		i++;
+		if (strcmp(token, "<") == 0)
+			*op = RED_IN;
+		else if (strcmp(token, ">") == 0)
+			*op = RED_OUT;
+		else if (strcmp(token, ">>") == 0)
+			*op = RED_APP;
+		else if (strcmp(token, "<<") == 0)
+			*op = HEREDOC;
+		else
+			tokens[i++] = ft_strdup(token);
+		token = ft_strtok(NULL, " \t\r\n\a");
 	}
 	tokens[i] = NULL;
 	return (tokens);
 }
+
 
 /* 
 // splits line according to delimiters with strtok

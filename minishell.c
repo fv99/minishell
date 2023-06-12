@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/12 13:09:05 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/12 14:11:40 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,90 @@ void    shell_loop(void)
 		cmds = split_line(line);
 		while (cmds[i] != NULL)
 		{
-			if (check_builtins(cmds[i]->args, __environ))
-			{
-				i++;
-				continue;
-			}
 			status = execute(cmds[i], __environ);
 			i++;
 		}
 		free_cmds(cmds);
 		free(line);
+	}
+}
+
+// check for pipes or redirects
+int	check_opts(command *cmd, char **envp)
+{
+	if (cmd->op == PIPE)
+		execute_pipe(cmd, envp);
+	else if (cmd->op != NONE)
+		execute_redirect(cmd, envp); etc.
+
+	else
+		execute(cmd, envp);
+	return (1);
+}
+
+// modified pipex to accept our cmd struct
+void	execute_pipe(command *cmd, char **envp)
+{
+	pid_t	pid;
+	int		pid_fd[2];
+
+	if (pipe(pid_fd) == -1)
+		exit(0);
+	pid = fork();
+	if (pid == -1)
+		exit(0);
+	if (!pid)
+	{
+		close(pid_fd[0]);
+		dup2(pid_fd[1], STDOUT_FILENO);
+		close(pid_fd[1]);
+		execute(cmd, envp);
+		exit(0);
+	}
+	else if (pid < 0)
+		exit(-1);
+	else
+	{
+		close(pid_fd[1]);
+		dup2(pid_fd[0], STDIN_FILENO);
+		close(pid_fd[0]);
+		execute(cmd->next, envp);
+	}
+}
+
+int	execute_redirect(command *cmd, char **envp)
+{
+	int		fd;
+	pid_t	pid;
+
+	if (cmd->op == RED_OUT)
+		fd = open(cmd->next->args[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (cmd->op == RED_IN)
+		fd = open(cmd->next->args[0], O_RDONLY);
+	if (cmd->op == RED_APP)
+		fd = open(cmd->next->args[0], O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (fd == -1)
+		you_fucked_up("Error opening fd");
+	
+	pid = fork();
+	if (pid == 0)
+	{
+		// child process
+		if (cmd->op == RED_OUT || cmp->op == RED_APP)
+			dup2(fd, STDOUT_FILENO);
+		else if (cmd->op == RED_IN)
+			dup2(fd, STDIN_FILENO);
+		close(fd);
+		execute(cmd, envp);
+		exit(0);
+	}
+	else if (pid < 0)
+		you_fucked_up("Error forking process");
+	else
+	{
+		// parent process
+		close(fd);
+		waitpid(pid, NULL, 0);
 	}
 }
 
@@ -57,6 +131,8 @@ int	execute(command *cmd, char **envp)
 	pid_t	pid;
 	int		status;
 
+	if (check_builtins(cmd->args, envp)) // check for builtins first
+        return (1);
 	path = get_path(cmd->args[0], envp);
 	pid = fork();
 	if (pid == 0)
