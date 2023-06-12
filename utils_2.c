@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 17:06:28 by x230              #+#    #+#             */
-/*   Updated: 2023/05/30 17:06:49 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/12 13:07:04 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,21 @@ char *ft_strtok(char *str, const char *delims)
         stock++;
     }
     return (ptr);
+}
+
+// function to free commands struct
+void    free_cmds(command **cmds)
+{
+    int i;
+
+    i = 0;
+    if (cmds == NULL)
+        return ;
+    while (cmds[i])
+    {
+        free_array(cmds[i]->args);
+        free(cmds[i]);
+        i++;
+    }
+    free(cmds);
 }

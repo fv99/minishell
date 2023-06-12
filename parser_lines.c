@@ -6,31 +6,13 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:38:20 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/12 12:24:09 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/12 13:01:38 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #define DELIMS " \t\r\n"
 #define BUFSIZE 128 //sets malloc size, change as needed
-
-// move this to header file later
-// for storing our operations:
-typedef enum ops
-{
-	NONE,
-	PIPE,		// |
-	RED_IN,		// <
-	RED_OUT,	// >
-	RED_APP,	// >>
-	HEREDOC		// <<
-}	ops;
-
-typedef struct command
-{
-	char	**args;
-	ops		op;
-}	command;
 
 // assumes | is always surrounded by spaces
 // todo: add redirects
@@ -73,7 +55,7 @@ char	**split_args(char *line)
 	while (token != NULL)
 	{
 		tokens[i] = ft_strdup(token);
-		token = ft_strtok(NULL, delims);
+		token = ft_strtok(NULL, DELIMS);
 		i++;
 	}
 	tokens[i] = NULL;

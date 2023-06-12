@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/07 16:32:10 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/12 13:09:05 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,52 +14,55 @@
 
 #define LINE_SIZE 1024
 #define PATH_SEP ":"
-
 #define EXEC_ERROR 42
 
 // main loop to run the shell
 void    shell_loop(void)
 {
+	command	**cmds;
     char    *line;
-    char    **args;
     int     status;
+	int		i;
 	extern char **__environ;	// our only global variable ?
 
 	status = 1;
 	while (status)
 	{
+		i = 0;
 		line = readline("> ");
         if (!line) // if readline returns NULL, it means we hit an EOF (like Ctrl+D)
             break;
 		if (line && *line)
             add_history(line);
-		args = split_line(line);
-		// test_parse_line(args);
-		if (check_builtins(args, __environ))
-        {
-            free_array(args);
-            free(line);
-            continue;
-        }
-		status = execute(args, __environ);	// handle this better - make func for separating the line
-		free_array(args);
+		cmds = split_line(line);
+		while (cmds[i] != NULL)
+		{
+			if (check_builtins(cmds[i]->args, __environ))
+			{
+				i++;
+				continue;
+			}
+			status = execute(cmds[i], __environ);
+			i++;
+		}
+		free_cmds(cmds);
 		free(line);
 	}
 }
 
 // need to make it so args passed are only until pipe or other delim
-int	execute(char **args, char **envp)
+int	execute(command *cmd, char **envp)
 {
 	char	*path;
-	pid_t pid;
-	int status;
+	pid_t	pid;
+	int		status;
 
-	path = get_path(args[0], envp);
+	path = get_path(cmd->args[0], envp);
 	pid = fork();
 	if (pid == 0)
 	{
 		// child process
-		if (execve(path, args, envp) == -1)
+		if (execve(path, cmd->args, envp) == -1)
 		{
 			free(path);
 			exit(EXEC_ERROR);
@@ -72,7 +75,7 @@ int	execute(char **args, char **envp)
 		// parent process
 		waitpid(pid, &status, WUNTRACED);
 		if (WIFEXITED(status) && WEXITSTATUS(status) == EXEC_ERROR)
-			ft_printf("Command not found: %s \n", args[0]);
+			ft_printf("Command not found: %s \n", cmd->args[0]);
 	}
 	free(path);
 	return (1);
