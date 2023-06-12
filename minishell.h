@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/07 14:45:50 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/12 13:06:05 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,30 @@
 
 // structs go here
 
+// for storing our operations:
+typedef enum ops
+{
+	NONE,
+	PIPE,		// |
+	RED_IN,		// <
+	RED_OUT,	// >
+	RED_APP,	// >>
+	HEREDOC		// <<
+}	ops;
+
+typedef struct command
+{
+	char	**args;
+	ops		op;
+}	command;
 
 
 // parser_lines.c
 
-char	**split_line(char *line);
+command	**split_line(char *line);
+
+char	**split_args(char *line);
+
 
 // utils_1.c
 
@@ -49,11 +68,13 @@ bool	is_delimiter(char c, const char *delims);
 
 char	*ft_strtok(char *str, const char *delims);
 
+void    free_cmds(command **cmds);
+
 // minishell.c
 
 void    shell_loop(void);
 
-int		execute(char **args, char **envp);
+int		execute(command *cmd, char **envp);
 
 char	*get_path(char *cmd, char **envp);
 
@@ -61,11 +82,22 @@ char	*get_path_token(char *cmd, char *path_env, int cmd_len);
 
 // builtins_1.c
 
-int		check_builtins(char **args);
+int		check_builtins(char **args, char **envp);
 
 int		builtin_exit(void);
 
 int		builtin_cd(char **args);
+
+char	*builtin_cd_expand_home(char **args, char *home_dir);
+
+int		builtin_pwd(void);
+
+// builtins_2.c
+
+int		builtin_echo(char **args);
+
+int		builtin_export(char **args, char **envp);
+
 
 // test_functions.c
 
