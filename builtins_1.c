@@ -6,7 +6,7 @@
 /*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 15:02:20 by x230              #+#    #+#             */
-/*   Updated: 2023/06/10 19:05:19 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/12 11:44:47 by x230             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	check_builtins(char **args, char **envp)
 	return (0);
 }
 
-int 	builtin_exit(void)
+int builtin_exit(void)
 {
     // add cleanup functionality before exiting the shell?
     exit(0);
@@ -62,6 +62,7 @@ int	builtin_cd(char **args)
 	return (0);
 }
 
+// expands ~ to home dir
 char *builtin_cd_expand_home(char **args, char *home_dir)
 {
 	char *expanded;
