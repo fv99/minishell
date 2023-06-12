@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/12 14:11:40 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/12 14:19:32 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ int	check_opts(command *cmd, char **envp)
 {
 	if (cmd->op == PIPE)
 		execute_pipe(cmd, envp);
-	else if (cmd->op != NONE)
-		execute_redirect(cmd, envp); etc.
+	else if (cmd->op == RED_IN || cmd->op == RED_OUT || cmd->op == RED_APP)
+		execute_redirect(cmd, envp);
 
 	else
 		execute(cmd, envp);
@@ -88,7 +88,7 @@ void	execute_pipe(command *cmd, char **envp)
 	}
 }
 
-int	execute_redirect(command *cmd, char **envp)
+void	execute_redirect(command *cmd, char **envp)
 {
 	int		fd;
 	pid_t	pid;
@@ -106,7 +106,7 @@ int	execute_redirect(command *cmd, char **envp)
 	if (pid == 0)
 	{
 		// child process
-		if (cmd->op == RED_OUT || cmp->op == RED_APP)
+		if (cmd->op == RED_OUT || cmd->op == RED_APP)
 			dup2(fd, STDOUT_FILENO);
 		else if (cmd->op == RED_IN)
 			dup2(fd, STDIN_FILENO);

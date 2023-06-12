@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/12 13:47:37 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/12 14:20:41 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <sys/wait.h>
+#include <sys/fcntl.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -48,8 +49,7 @@ typedef struct command
 
 command	**split_line(char *line);
 
-char	**split_args(char *line);
-
+char	**split_args(char *line, ops *op);
 
 // utils_1.c
 
@@ -74,6 +74,13 @@ void    free_cmds(command **cmds);
 // minishell.c
 
 void    shell_loop(void);
+
+int		check_opts(command *cmd, char **envp);
+
+void	execute_pipe(command *cmd, char **envp);
+
+void	execute_redirect(command *cmd, char **envp);
+
 
 int		execute(command *cmd, char **envp);
 
