@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/12 14:19:32 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/13 13:15:55 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,29 +19,34 @@
 // main loop to run the shell
 void    shell_loop(void)
 {
-	command	**cmds;
+	// command	*cmd;
     char    *line;
+	char	*out;
     int     status;
-	int		i;
 	extern char **__environ;	// our only global variable ?
 
 	status = 1;
 	while (status)
 	{
-		i = 0;
 		line = readline("> ");
         if (!line) // if readline returns NULL, it means we hit an EOF (like Ctrl+D)
             break;
 		if (line && *line)
             add_history(line);
-		cmds = split_line(line);
-		while (cmds[i] != NULL)
-		{
-			status = execute(cmds[i], __environ);
-			i++;
-		}
-		free_cmds(cmds);
+		out = sanitize_input(line);
 		free(line);
+		ft_printf("sanitized line: %s \n", out);
+		
+			// reenable this after fixing the parser
+/* 		cmd = parse_input(line);
+		while (cmd != NULL)
+		{
+			test_cmd_parser(cmd);
+			// status = execute(cmds[i], __environ);
+			cmd = cmd->next;
+		}
+		free_commands(cmd); */
+		free(out);
 	}
 }
 
@@ -74,17 +79,16 @@ void	execute_pipe(command *cmd, char **envp)
 		close(pid_fd[0]);
 		dup2(pid_fd[1], STDOUT_FILENO);
 		close(pid_fd[1]);
-		execute(cmd, envp);
-		exit(0);
+		check_opts(cmd, envp);
+		exit(1);
 	}
-	else if (pid < 0)
-		exit(-1);
 	else
 	{
 		close(pid_fd[1]);
 		dup2(pid_fd[0], STDIN_FILENO);
 		close(pid_fd[0]);
-		execute(cmd->next, envp);
+		check_opts(cmd->next, envp);
+		waitpid(pid, NULL, 0);
 	}
 }
 
@@ -111,7 +115,7 @@ void	execute_redirect(command *cmd, char **envp)
 		else if (cmd->op == RED_IN)
 			dup2(fd, STDIN_FILENO);
 		close(fd);
-		execute(cmd, envp);
+		check_opts(cmd, envp);
 		exit(0);
 	}
 	else if (pid < 0)

@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/12 14:20:41 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/13 13:00:57 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,8 @@ typedef struct command
 
 // parser_lines.c
 
-command	**split_line(char *line);
+char	*sanitize_input(char *line);
 
-char	**split_args(char *line, ops *op);
 
 // utils_1.c
 
@@ -69,7 +68,7 @@ bool	is_delimiter(char c, const char *delims);
 
 char	*ft_strtok(char *str, const char *delims);
 
-void    free_cmds(command **cmds);
+void	free_commands(command *commands);
 
 // minishell.c
 
@@ -116,6 +115,6 @@ void	pipex(command *cmd, char **envp);
 
 // test_functions.c
 
-void 	test_parse_line(char **tokens);
+void	test_cmd_parser(command *cmd);
 
 #endif
