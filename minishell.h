@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/19 13:01:23 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/19 17:45:40 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,26 @@
 
 // structs go here
 
+/*
+	char_i - counter to iterate input string
+	word_n - used to count words in input string, in fill_array as start index
+	token_n - used in ft_fill_array, counter of processed tokens
+
+	quotes - tracks if we are inside quotation, true/false
+	quote_c - stores type of quote (ascii value for ' or ") or 0
+*/
+typedef struct s_lexer
+{
+	int char_i;
+	int	word_n;
+	int	token_n;
+	int	quotes;
+	int	quote_c;
+}	t_lexer;
+
+
 // for storing our operations:
-typedef enum ops
+typedef enum s_ops
 {
 	NONE,
 	PIPE,		// |
@@ -35,20 +53,30 @@ typedef enum ops
 	RED_OUT,	// >
 	RED_APP,	// >>
 	HEREDOC		// <<
-}	ops;
+}	t_ops;
 
-typedef struct command
+typedef struct s_parsed
 {
 	char	**args;
-	ops		op;
-	struct command *next;
-}	command;
+	t_ops		op;
+	int		infile;
+	int		outfile;
+	struct	parsed *next;
+}	t_parsed;
 
+// lexer.c
+
+char 	**tokenize(char *src, char *delims);
+
+int		count_words(char *s, char *delims, t_lexer *lex);
+
+char	**fill_array(char **ret, char *s, char *delims, t_lexer *lex);
 
 // parser_lines.c
 
-void	sanitize_quotes(char *src, char *dest);
+t_ops	check_op(char *str);
 
+void	sanitize_quotes(char *src, char *dest);
 
 // utils_1.c
 
@@ -68,20 +96,11 @@ bool	is_delimiter(char c, const char *delims);
 
 char	*ft_strtok(char *str, const char *delims);
 
-void	free_commands(command *commands);
+char	*ft_strstr(char *str, char *to_find);
 
 // minishell.c
 
 void    shell_loop(void);
-
-int		check_opts(command *cmd, char **envp);
-
-void	execute_pipe(command *cmd, char **envp);
-
-void	execute_redirect(command *cmd, char **envp);
-
-
-int		execute(command *cmd, char **envp);
 
 char	*get_path(char *cmd, char **envp);
 
@@ -107,14 +126,11 @@ int		builtin_export(char **args, char **envp);
 
 // pipex.c
 
-void	here_doc(command *cmd);
-
 void	here_doc_exec(char **argv, int *pid_fd);
-
-void	pipex(command *cmd, char **envp);
 
 // test_functions.c
 
-void	test_cmd_parser(command *cmd);
+void	test_tokenize(char* input);
+
 
 #endif

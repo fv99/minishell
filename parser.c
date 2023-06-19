@@ -1,20 +1,55 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_lines.c                                     :+:      :+:    :+:   */
+/*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:38:20 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/19 13:12:39 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/19 15:53:26 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#define DELIMS " \t\r\n"
-#define ARG_SIZE 256 // sets malloc size, change as needed
-#define LINE_SIZE 1024
 
+/* 
+    PARSER (not final)
+
+    take input from lexer:
+    char** = {cmd1, "blah blah", whats, 'up 'you, fvonsovs, |, wc, -l, >, outfile, NULL}
+    
+    go over array, split according to redirect, use check op to set the op type,
+    set outfile and infile according to operation
+        parsed 1:
+            **args = {cmd1, "blah blah", whats, 'up 'you, fvonsovs, NULL}
+            op = PIPE
+            infile = 0;
+            outfile = pipe;
+            next = parsed 2;
+        parsed 2:
+            **args = {wc, -l, NULL}
+            op = RED_OUT;
+            infile = pipe (previous output)
+            outfile = fd to open file 'outfile'
+            next = NULL;
+    
+*/
+
+// checks for op type 
+t_ops check_op(char *str)
+{
+	if (!strcmp(str, "|"))
+		return PIPE;
+	if (!strcmp(str, "<"))
+		return RED_IN;
+	if (!strcmp(str, ">"))
+		return RED_OUT;
+	if (!strcmp(str, ">>"))
+		return RED_APP;
+	if (!strcmp(str, "<<"))
+		return HEREDOC;
+	return NONE;
+}
 
 // strips quotes from src string
 void sanitize_quotes(char *src, char *dest)
@@ -47,28 +82,3 @@ void sanitize_quotes(char *src, char *dest)
     }
     dest[j] = '\0';
 }
-
-
-/* 
-// splits line according to delimiters with strtok
-char	**split_line(char *line)
-{
-	int		i;
-	char	**tokens;
-	char	*token;
-
-	i = 0;
-	tokens = malloc(sizeof(char *) * BUFSIZE);
-	token = ft_strtok(line, DELIMS);
-	while (token != NULL)
-	{
-		tokens[i] = malloc(sizeof(char) * (ft_strlen(token) + 1));
-		ft_strcpy(tokens[i], token);
-		token = ft_strtok(NULL, DELIMS);
-		i++;
-	}
-	tokens[i] = NULL;
-	return (tokens);
-}
-
- */

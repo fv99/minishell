@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/19 13:02:05 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/19 17:53:57 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,7 @@
 // main loop to run the shell
 void    shell_loop(void)
 {
-	// command	*cmd;
     char    *line;
-	char	*out;
     int     status;
 	extern char **__environ;	// our only global variable ?
 
@@ -34,25 +32,12 @@ void    shell_loop(void)
 		if (line && *line)
             add_history(line);
 
-		out = malloc(sizeof(char) * ft_strlen(line) + 1);
-		sanitize_quotes(line, out);
+		test_tokenize(line);
 		free(line);
-		ft_printf("sanitized line: %s \n", out);
-		
-			// reenable this after fixing the parser
-/* 		cmd = parse_input(line);
-		while (cmd != NULL)
-		{
-			test_cmd_parser(cmd);
-			// status = execute(cmds[i], __environ);
-			cmd = cmd->next;
-		}
-		free_commands(cmd); */
-		free(out);
 	}
 }
 
-// check for pipes or redirects
+/* // check for pipes or redirects
 int	check_opts(command *cmd, char **envp)
 {
 	if (cmd->op == PIPE)
@@ -63,74 +48,9 @@ int	check_opts(command *cmd, char **envp)
 	else
 		execute(cmd, envp);
 	return (1);
-}
+} */
 
-// modified pipex to accept our cmd struct
-void	execute_pipe(command *cmd, char **envp)
-{
-	pid_t	pid;
-	int		pid_fd[2];
-
-	if (pipe(pid_fd) == -1)
-		exit(0);
-	pid = fork();
-	if (pid == -1)
-		exit(0);
-	if (!pid)
-	{
-		close(pid_fd[0]);
-		dup2(pid_fd[1], STDOUT_FILENO);
-		close(pid_fd[1]);
-		check_opts(cmd, envp);
-		exit(1);
-	}
-	else
-	{
-		close(pid_fd[1]);
-		dup2(pid_fd[0], STDIN_FILENO);
-		close(pid_fd[0]);
-		check_opts(cmd->next, envp);
-		waitpid(pid, NULL, 0);
-	}
-}
-
-void	execute_redirect(command *cmd, char **envp)
-{
-	int		fd;
-	pid_t	pid;
-
-	if (cmd->op == RED_OUT)
-		fd = open(cmd->next->args[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (cmd->op == RED_IN)
-		fd = open(cmd->next->args[0], O_RDONLY);
-	if (cmd->op == RED_APP)
-		fd = open(cmd->next->args[0], O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (fd == -1)
-		you_fucked_up("Error opening fd");
-	
-	pid = fork();
-	if (pid == 0)
-	{
-		// child process
-		if (cmd->op == RED_OUT || cmd->op == RED_APP)
-			dup2(fd, STDOUT_FILENO);
-		else if (cmd->op == RED_IN)
-			dup2(fd, STDIN_FILENO);
-		close(fd);
-		check_opts(cmd, envp);
-		exit(0);
-	}
-	else if (pid < 0)
-		you_fucked_up("Error forking process");
-	else
-	{
-		// parent process
-		close(fd);
-		waitpid(pid, NULL, 0);
-	}
-}
-
-// need to make it so args passed are only until pipe or other delim
+/* // need to make it so args passed are only until pipe or other delim
 int	execute(command *cmd, char **envp)
 {
 	char	*path;
@@ -161,7 +81,7 @@ int	execute(command *cmd, char **envp)
 	}
 	free(path);
 	return (1);
-}
+} */
 
 
 // Gets PATH environment variable and saves into path_env

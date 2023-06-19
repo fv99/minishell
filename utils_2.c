@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 17:06:28 by x230              #+#    #+#             */
-/*   Updated: 2023/06/13 12:30:10 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/19 17:31:38 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,25 +50,24 @@ char *ft_strtok(char *str, const char *delims)
     return (ptr);
 }
 
-// function to free commands struct
-void free_commands(command *commands)
+char	*ft_strstr(char *str, char *to_find)
 {
-    command *current;
-    command *next;
-    int     i;
+	int i;
+	int j;
 
-    current = commands;
-    i = 0;
-    while (current != NULL) 
-    {
-        next = current->next;
-        while (current->args[i] != NULL)
-        {
-            free(current->args[i]);
-            i++;
-        }
-        free(current->args);
-        free(current);
-        current = next;
-    }
+	i = 0;
+	if (to_find[0] == '\0')
+		return (str);
+	while (str[i] != '\0')
+	{
+		j = 0;
+		while (str[i + j] != '\0' && str[i + j] == to_find[j])
+		{
+			if (to_find[j + 1] == '\0')
+				return (&str[i]);
+			++j;
+		}
+		++i;
+	}
+	return (0);
 }
