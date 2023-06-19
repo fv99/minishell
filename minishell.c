@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/13 13:15:55 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/19 13:02:05 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,9 @@ void    shell_loop(void)
             break;
 		if (line && *line)
             add_history(line);
-		out = sanitize_input(line);
+
+		out = malloc(sizeof(char) * ft_strlen(line) + 1);
+		sanitize_quotes(line, out);
 		free(line);
 		ft_printf("sanitized line: %s \n", out);
 		

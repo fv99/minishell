@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:38:20 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/13 13:29:58 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/19 13:12:39 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,64 +16,36 @@
 #define LINE_SIZE 1024
 
 
-// will get rid of unclosed quotes or special characters
-// which are not required by the
-// subject such as \ (backslash) or ; (semicolon)
-char *sanitize_input(char *line)
+// strips quotes from src string
+void sanitize_quotes(char *src, char *dest)
 {
-    bool    single_open = false;
-    bool    double_open = false;
-    char    current;
-    char    *output;
+    int     n;
     int     i;
     int     j;
+    char    lastquote;
+    char    c;
 
     i = 0;
     j = 0;
-    output = malloc(ft_strlen(line) + 1);
-    if (!output)
-        return NULL;
-
-    while (i < ft_strlen(line))
+    lastquote = '\0';
+    n = ft_strlen(src);
+    if (n <= 1)
     {
-        current = line[i];
-
-        if (current == '\'')    // handle single quote
-        {
-            if (single_open) // closing single quote
-            {
-                single_open = false;
-                output[j++] = '\'';
-            }
-            else
-                single_open = true;
-            i++;
-            continue;
-        }
-        if (current == '\"')    // handle double quote
-        {
-            if (double_open) // closing double quote
-            {
-                double_open = false;
-                output[j++] = '\"';
-            }
-            else
-                double_open = true;
-            i++;
-            continue;
-        }
-        if ((single_open || double_open) && (current != '\\' && current != ';'))
-            output[j++] = current;
-        else if (!single_open && !double_open && (current != '\\' && current != ';'))
-            output[j++] = current;
+        ft_strcpy(dest, src);
+        return ;
+    }
+    while (i < n)
+    {
+        c = src[i];
+        if ((c == '\'' || c == '\"') && lastquote == 0)
+			lastquote = c;
+		else if (c == lastquote)
+			lastquote = 0;
+		else
+			dest[j++] = c;
         i++;
     }
-
-    if (single_open) output[--j] = '\0';  // remove last single quote if it's unclosed
-    if (double_open) output[--j] = '\0';  // remove last double quote if it's unclosed
-
-    output[j] = '\0';
-    return (output);
+    dest[j] = '\0';
 }
 
 

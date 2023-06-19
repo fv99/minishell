@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/13 13:00:57 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/19 13:01:23 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ typedef struct command
 
 // parser_lines.c
 
-char	*sanitize_input(char *line);
+void	sanitize_quotes(char *src, char *dest);
 
 
 // utils_1.c
