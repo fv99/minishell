@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 17:06:28 by x230              #+#    #+#             */
-/*   Updated: 2023/06/12 13:07:04 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/19 17:31:38 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,19 +50,24 @@ char *ft_strtok(char *str, const char *delims)
     return (ptr);
 }
 
-// function to free commands struct
-void    free_cmds(command **cmds)
+char	*ft_strstr(char *str, char *to_find)
 {
-    int i;
+	int i;
+	int j;
 
-    i = 0;
-    if (cmds == NULL)
-        return ;
-    while (cmds[i])
-    {
-        free_array(cmds[i]->args);
-        free(cmds[i]);
-        i++;
-    }
-    free(cmds);
+	i = 0;
+	if (to_find[0] == '\0')
+		return (str);
+	while (str[i] != '\0')
+	{
+		j = 0;
+		while (str[i + j] != '\0' && str[i + j] == to_find[j])
+		{
+			if (to_find[j + 1] == '\0')
+				return (&str[i]);
+			++j;
+		}
+		++i;
+	}
+	return (0);
 }

@@ -3,28 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   test_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:59:43 by x230              #+#    #+#             */
-/*   Updated: 2023/05/30 17:04:20 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/19 17:59:17 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// dont forget to free after
-void test_parse_line(char **tokens)
+void	test_tokenize(char* input)
 {
-    printf("Tokens found:\n");
-    for (int i = 0; tokens[i] != NULL; i++)
-    {
-        if (tokens[i] != NULL)
-        {
-            printf("%s\n", tokens[i]);
-        }
-        else
-        {
-            printf("Token %d is NULL\n", i);
-        }
-    }
+	char **result;
+	int i;
+
+	result = tokenize(input, " ");
+	if (result == NULL)
+	{
+		printf("Test failed: tokenizer returned NULL\n");
+		return;
+	}
+
+	i = 0;
+	while (result[i] != NULL)
+	{
+		printf("Token %d: %s\n", i, result[i]);
+		++i;
+	}
+
+	for (i = 0; result[i] != NULL; i++)
+		free(result[i]);
+	free(result);
 }

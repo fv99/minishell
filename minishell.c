@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/12 13:09:05 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/19 17:53:57 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,44 +19,46 @@
 // main loop to run the shell
 void    shell_loop(void)
 {
-	command	**cmds;
     char    *line;
     int     status;
-	int		i;
 	extern char **__environ;	// our only global variable ?
 
 	status = 1;
 	while (status)
 	{
-		i = 0;
 		line = readline("> ");
         if (!line) // if readline returns NULL, it means we hit an EOF (like Ctrl+D)
             break;
 		if (line && *line)
             add_history(line);
-		cmds = split_line(line);
-		while (cmds[i] != NULL)
-		{
-			if (check_builtins(cmds[i]->args, __environ))
-			{
-				i++;
-				continue;
-			}
-			status = execute(cmds[i], __environ);
-			i++;
-		}
-		free_cmds(cmds);
+
+		test_tokenize(line);
 		free(line);
 	}
 }
 
-// need to make it so args passed are only until pipe or other delim
+/* // check for pipes or redirects
+int	check_opts(command *cmd, char **envp)
+{
+	if (cmd->op == PIPE)
+		execute_pipe(cmd, envp);
+	else if (cmd->op == RED_IN || cmd->op == RED_OUT || cmd->op == RED_APP)
+		execute_redirect(cmd, envp);
+
+	else
+		execute(cmd, envp);
+	return (1);
+} */
+
+/* // need to make it so args passed are only until pipe or other delim
 int	execute(command *cmd, char **envp)
 {
 	char	*path;
 	pid_t	pid;
 	int		status;
 
+	if (check_builtins(cmd->args, envp)) // check for builtins first
+        return (1);
 	path = get_path(cmd->args[0], envp);
 	pid = fork();
 	if (pid == 0)
@@ -79,7 +81,7 @@ int	execute(command *cmd, char **envp)
 	}
 	free(path);
 	return (1);
-}
+} */
 
 
 // Gets PATH environment variable and saves into path_env
