@@ -12,8 +12,8 @@
 
 UNAME_S 	=	$(shell uname -s)
 NAME		=	minishell
-SRCS		=	main.c minishell.c parser.c utils_1.c utils_2.c \
-				builtins_1.c builtins_2.c lexer.c test_functions.c 
+SRCS		=	main.c minishell.c parser_lines.c utils_1.c utils_2.c \
+				builtins_1.c builtins_2.c lexer.c expand.c test_functions.c
 OBJS		=	${SRCS:.c=.o}
 LIBC		=	ar -cq
 RM			=	rm -f

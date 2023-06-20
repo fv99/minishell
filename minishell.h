@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/19 17:45:40 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/20 16:25:42 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,19 @@ typedef struct s_parsed
 
 // lexer.c
 
-char 	**tokenize(char *src, char *delims);
+char	**tokenize(char *src, char *delims, char **envp);
 
 int		count_words(char *s, char *delims, t_lexer *lex);
 
 char	**fill_array(char **ret, char *s, char *delims, t_lexer *lex);
+
+// expand.c 
+
+char	*expand_args(char **str_ptr, char **envp);
+
+char	*expand_arg(char *str, int counter, char **envp);
+
+char	*get_arg(char *argname, char **envp);
 
 // parser_lines.c
 
@@ -130,7 +138,7 @@ void	here_doc_exec(char **argv, int *pid_fd);
 
 // test_functions.c
 
-void	test_tokenize(char* input);
+void	test_tokenize(char* input, char **envp);
 
 
 #endif

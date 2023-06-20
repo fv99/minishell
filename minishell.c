@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/20 08:29:52 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/06/20 16:13:20 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void    shell_loop(void)
 		if (line && *line)
             add_history(line);
 
-		test_tokenize(line);
+		test_tokenize(line, __environ);
 		free(line);
 	}
 }
