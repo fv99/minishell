@@ -90,7 +90,7 @@ int	execute(command *cmd, char **envp)
 char	*get_path(char *cmd, char **envp)
 {
 	int		i;
-	char	*path_env;
+	char	*path_env = NULL;
 	char	*path;
 	int		cmd_len;
 
