@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
 /*   Updated: 2023/06/20 16:13:20 by fvonsovs         ###   ########.fr       */
@@ -90,7 +90,7 @@ int	execute(command *cmd, char **envp)
 char	*get_path(char *cmd, char **envp)
 {
 	int		i;
-	char	*path_env;
+	char	*path_env = NULL;
 	char	*path;
 	int		cmd_len;
 
