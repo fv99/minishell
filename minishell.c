@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/12 13:09:05 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/15 15:59:34 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int	execute(command *cmd, char **envp)
 char	*get_path(char *cmd, char **envp)
 {
 	int		i;
-	char	*path_env;
+	char	*path_env = NULL;
 	char	*path;
 	int		cmd_len;
 
