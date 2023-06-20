@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/12 13:06:05 by x230             ###   ########.fr       */
+/*   Updated: 2023/06/19 17:45:40 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,32 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <sys/wait.h>
+#include <sys/fcntl.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
 // structs go here
 
+/*
+	char_i - counter to iterate input string
+	word_n - used to count words in input string, in fill_array as start index
+	token_n - used in ft_fill_array, counter of processed tokens
+
+	quotes - tracks if we are inside quotation, true/false
+	quote_c - stores type of quote (ascii value for ' or ") or 0
+*/
+typedef struct s_lexer
+{
+	int char_i;
+	int	word_n;
+	int	token_n;
+	int	quotes;
+	int	quote_c;
+}	t_lexer;
+
+
 // for storing our operations:
-typedef enum ops
+typedef enum s_ops
 {
 	NONE,
 	PIPE,		// |
@@ -34,21 +53,30 @@ typedef enum ops
 	RED_OUT,	// >
 	RED_APP,	// >>
 	HEREDOC		// <<
-}	ops;
+}	t_ops;
 
-typedef struct command
+typedef struct s_parsed
 {
 	char	**args;
-	ops		op;
-}	command;
+	t_ops		op;
+	int		infile;
+	int		outfile;
+	struct	parsed *next;
+}	t_parsed;
 
+// lexer.c
+
+char 	**tokenize(char *src, char *delims);
+
+int		count_words(char *s, char *delims, t_lexer *lex);
+
+char	**fill_array(char **ret, char *s, char *delims, t_lexer *lex);
 
 // parser_lines.c
 
-command	**split_line(char *line);
+t_ops	check_op(char *str);
 
-char	**split_args(char *line);
-
+void	sanitize_quotes(char *src, char *dest);
 
 // utils_1.c
 
@@ -68,13 +96,11 @@ bool	is_delimiter(char c, const char *delims);
 
 char	*ft_strtok(char *str, const char *delims);
 
-void    free_cmds(command **cmds);
+char	*ft_strstr(char *str, char *to_find);
 
 // minishell.c
 
 void    shell_loop(void);
-
-int		execute(command *cmd, char **envp);
 
 char	*get_path(char *cmd, char **envp);
 
@@ -98,9 +124,13 @@ int		builtin_echo(char **args);
 
 int		builtin_export(char **args, char **envp);
 
+// pipex.c
+
+void	here_doc_exec(char **argv, int *pid_fd);
 
 // test_functions.c
 
-void 	test_parse_line(char **tokens);
+void	test_tokenize(char* input);
+
 
 #endif
