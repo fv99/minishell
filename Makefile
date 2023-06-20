@@ -3,21 +3,28 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+         #
+#    By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/19 12:15:10 by fvonsovs          #+#    #+#              #
-#    Updated: 2023/06/19 17:32:34 by fvonsovs         ###   ########.fr        #
+#    Updated: 2023/06/20 08:45:08 by phelebra         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g -L/usr/include -lreadline
+UNAME_S 	=	$(shell uname -s)
 NAME		=	minishell
-SRCS		=	main.c minishell.c parser_lines.c utils_1.c utils_2.c \
-				builtins_1.c builtins_2.c lexer.c test_functions.c
+SRCS		=	main.c minishell.c parser.c utils_1.c utils_2.c \
+				builtins_1.c builtins_2.c lexer.c test_functions.c 
 OBJS		=	${SRCS:.c=.o}
 LIBC		=	ar -cq
 RM			=	rm -f
 LIBFT		=	./libft/libft.a
+
+ifeq ($(UNAME_S),Linux)
+CFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g -L/usr/include -lreadline
+endif
+ifeq ($(UNAME_S),Darwin)
+CFLAGS		=	-lreadline
+endif
 
 # Colors
 GREEN		=	$(shell printf "\033[0;32m")
