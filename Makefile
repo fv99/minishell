@@ -6,14 +6,14 @@
 #    By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/19 12:15:10 by fvonsovs          #+#    #+#              #
-#    Updated: 2023/06/19 17:32:34 by fvonsovs         ###   ########.fr        #
+#    Updated: 2023/06/20 16:25:48 by fvonsovs         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g -L/usr/include -lreadline
 NAME		=	minishell
 SRCS		=	main.c minishell.c parser_lines.c utils_1.c utils_2.c \
-				builtins_1.c builtins_2.c lexer.c test_functions.c
+				builtins_1.c builtins_2.c lexer.c expand.c test_functions.c
 OBJS		=	${SRCS:.c=.o}
 LIBC		=	ar -cq
 RM			=	rm -f

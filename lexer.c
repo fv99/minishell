@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 15:01:41 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/20 13:22:26 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/20 16:24:46 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 	counts tokens with count_words, allocated memory
 	fills array with tokens from fill_array
 */
-char **tokenize(char *src, char *delims)
+char **tokenize(char *src, char *delims, char **envp)
 {
 	t_lexer	lex;
 	char	**ret;
@@ -55,6 +55,12 @@ char **tokenize(char *src, char *delims)
 		return (NULL);
 	ret = fill_array(ret, src, delims, &lex);
 	ret[n] = NULL;
+	lex.char_i = 0;
+	while (lex.char_i < n)
+	{
+	    ret[lex.char_i] = expand_args(&ret[lex.char_i], envp);
+		lex.char_i++;
+	}
 	return (ret);
 }
 
@@ -143,6 +149,4 @@ char	**split_line(char *line)
 	tokens[i] = NULL;
 	return (tokens);
 }
-
-
- */
+*/
