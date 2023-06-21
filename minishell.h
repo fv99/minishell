@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/20 16:25:42 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/21 13:37:38 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,23 @@ typedef struct s_parsed
 	struct	parsed *next;
 }	t_parsed;
 
-// lexer.c
+// lexer_1.c
 
-char	**tokenize(char *src, char *delims, char **envp);
+char	**lexer(char *s, char **envp);
+
+char	**tokenize(char *src, char *delims);
 
 int		count_words(char *s, char *delims, t_lexer *lex);
 
 char	**fill_array(char **ret, char *s, char *delims, t_lexer *lex);
+
+// lexer_2.c
+
+char	**tokenize_opts(char *src, char *delims);
+
+int		count_words_opts(char *s, char *delims, t_lexer *lex);
+
+char	**fill_array_opts(char **ret, char *s, char *delims, t_lexer *lex);
 
 // expand.c 
 
@@ -105,6 +115,14 @@ bool	is_delimiter(char c, const char *delims);
 char	*ft_strtok(char *str, const char *delims);
 
 char	*ft_strstr(char *str, char *to_find);
+
+// utils_3.c
+
+char	**ft_matrix_replace_in(char ***big, char **small, int n);
+
+int		ft_matrixlen(char **m);
+
+void	ft_free_matrix(char ***m);
 
 // minishell.c
 

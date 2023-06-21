@@ -3,17 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+         #
+#    By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/19 12:15:10 by fvonsovs          #+#    #+#              #
-#    Updated: 2023/06/20 08:45:08 by phelebra         ###   ########.fr        #
+#    Updated: 2023/06/21 13:18:06 by fvonsovs         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 UNAME_S 	=	$(shell uname -s)
 NAME		=	minishell
-SRCS		=	main.c minishell.c parser_lines.c utils_1.c utils_2.c \
-				builtins_1.c builtins_2.c lexer.c expand.c test_functions.c
+SRCS		=	main.c minishell.c utils_1.c utils_2.c utils_3.c \
+				builtins_1.c builtins_2.c lexer_1.c lexer_2.c expand.c test_functions.c
 OBJS		=	${SRCS:.c=.o}
 LIBC		=	ar -cq
 RM			=	rm -f

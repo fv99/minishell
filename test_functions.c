@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:59:43 by x230              #+#    #+#             */
-/*   Updated: 2023/06/20 16:12:39 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/21 13:10:55 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	test_tokenize(char* input, char **envp)
 	char **result;
 	int i;
 
-	result = tokenize(input, " ", envp);
+	result = lexer(input, envp);
 	if (result == NULL)
 	{
 		printf("Test failed: tokenizer returned NULL\n");
