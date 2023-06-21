@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer.c                                            :+:      :+:    :+:   */
+/*   lexer_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 15:01:41 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/20 16:24:46 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/21 13:38:22 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,35 @@
 	step 3: split opts such as | < > << >> outside of quotes
 		char ** = {cmd1, "blah blah", whats, 'up 'you, fvonsovs, |, wc, -l, >, outfile, NULL}
 
+    NOTE
+        << will be interpreted as {<, <} and vice versa for >>
+        parser should handle this
 */
+char	**lexer(char *s, char **envp)
+{
+    char **tokenized;
+    char **opt_split;
+    int i;
+
+    tokenized = tokenize(s, " ");
+    i = -1;
+    while (tokenized && tokenized[++i])
+    {
+        tokenized[i] = expand_args(&tokenized[i], envp);
+        opt_split = tokenize_opts(tokenized[i], "<|>"); // tokenize the current token
+        ft_matrix_replace_in(&tokenized, opt_split, i);
+        i += ft_matrixlen(opt_split) - 1;
+        ft_free_matrix(&opt_split);
+    }
+    return tokenized;
+}
+
 /*
 	used to tokenize command string
 	counts tokens with count_words, allocated memory
 	fills array with tokens from fill_array
 */
-char **tokenize(char *src, char *delims, char **envp)
+char **tokenize(char *src, char *delims)
 {
 	t_lexer	lex;
 	char	**ret;
@@ -55,12 +77,6 @@ char **tokenize(char *src, char *delims, char **envp)
 		return (NULL);
 	ret = fill_array(ret, src, delims, &lex);
 	ret[n] = NULL;
-	lex.char_i = 0;
-	while (lex.char_i < n)
-	{
-	    ret[lex.char_i] = expand_args(&ret[lex.char_i], envp);
-		lex.char_i++;
-	}
 	return (ret);
 }
 

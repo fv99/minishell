@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:38:20 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/19 15:53:26 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/21 13:31:51 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,10 @@
             infile = pipe (previous output)
             outfile = fd to open file 'outfile'
             next = NULL;
-    
+            
+    NOTE
+        << will be interpreted as {<, <} and vice versa for >>
+        parser should handle this
 */
 
 // checks for op type 
