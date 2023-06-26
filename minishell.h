@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/26 16:25:49 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/26 16:52:07 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,13 +92,17 @@ char	*get_arg(char *argname, char **envp);
 
 // parser.c
 
+void	update_current_operation(t_ops *curr, char **args, int *i);
+
+t_parsed *add_new_node(char **cmds, t_ops curr, t_parsed **head, t_parsed **tail);
+
 t_parsed *fill_list(char **args);
 
 t_parsed *new_parser_node(char **args, t_ops op);
 
 t_ops	check_op(char *str);
 
-void	sanitize_quotes(char *src, char *dest);
+// void	sanitize_quotes(char *src, char *dest);
 
 // utils_1.c
 
