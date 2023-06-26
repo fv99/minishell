@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/21 13:37:38 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/26 16:52:07 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ typedef struct s_parsed
 	t_ops		op;
 	int		infile;
 	int		outfile;
-	struct	parsed *next;
+	struct	s_parsed *next;
 }	t_parsed;
 
 // lexer_1.c
@@ -90,11 +90,19 @@ char	*expand_arg(char *str, int counter, char **envp);
 
 char	*get_arg(char *argname, char **envp);
 
-// parser_lines.c
+// parser.c
+
+void	update_current_operation(t_ops *curr, char **args, int *i);
+
+t_parsed *add_new_node(char **cmds, t_ops curr, t_parsed **head, t_parsed **tail);
+
+t_parsed *fill_list(char **args);
+
+t_parsed *new_parser_node(char **args, t_ops op);
 
 t_ops	check_op(char *str);
 
-void	sanitize_quotes(char *src, char *dest);
+// void	sanitize_quotes(char *src, char *dest);
 
 // utils_1.c
 
@@ -157,6 +165,8 @@ void	here_doc_exec(char **argv, int *pid_fd);
 // test_functions.c
 
 void	test_tokenize(char* input, char **envp);
+
+void test_parser(t_parsed *head);
 
 
 #endif

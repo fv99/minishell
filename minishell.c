@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
+/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/20 16:13:20 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/26 16:07:33 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,10 @@
 // main loop to run the shell
 void    shell_loop(void)
 {
-    char    *line;
-    int     status;
+	t_parsed	*head;
+    char    	*line;
+	char		**ebloid;
+    int     	status;
 	extern char **__environ;	// our only global variable ?
 
 	status = 1;
@@ -31,8 +33,10 @@ void    shell_loop(void)
             break;
 		if (line && *line)
             add_history(line);
-
 		test_tokenize(line, __environ);
+		ebloid = lexer(line, __environ);
+		head = fill_list(ebloid);
+		test_parser(head);
 		free(line);
 	}
 }
