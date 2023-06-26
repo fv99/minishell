@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/21 13:37:38 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/26 16:25:49 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ typedef struct s_parsed
 	t_ops		op;
 	int		infile;
 	int		outfile;
-	struct	parsed *next;
+	struct	s_parsed *next;
 }	t_parsed;
 
 // lexer_1.c
@@ -90,7 +90,11 @@ char	*expand_arg(char *str, int counter, char **envp);
 
 char	*get_arg(char *argname, char **envp);
 
-// parser_lines.c
+// parser.c
+
+t_parsed *fill_list(char **args);
+
+t_parsed *new_parser_node(char **args, t_ops op);
 
 t_ops	check_op(char *str);
 
@@ -157,6 +161,8 @@ void	here_doc_exec(char **argv, int *pid_fd);
 // test_functions.c
 
 void	test_tokenize(char* input, char **envp);
+
+void test_parser(t_parsed *head);
 
 
 #endif

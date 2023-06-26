@@ -6,14 +6,14 @@
 #    By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/19 12:15:10 by fvonsovs          #+#    #+#              #
-#    Updated: 2023/06/21 13:18:06 by fvonsovs         ###   ########.fr        #
+#    Updated: 2023/06/26 16:08:58 by fvonsovs         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 UNAME_S 	=	$(shell uname -s)
 NAME		=	minishell
 SRCS		=	main.c minishell.c utils_1.c utils_2.c utils_3.c \
-				builtins_1.c builtins_2.c lexer_1.c lexer_2.c expand.c test_functions.c
+				builtins_1.c builtins_2.c lexer_1.c lexer_2.c parser.c expand.c test_functions.c
 OBJS		=	${SRCS:.c=.o}
 LIBC		=	ar -cq
 RM			=	rm -f

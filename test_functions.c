@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:59:43 by x230              #+#    #+#             */
-/*   Updated: 2023/06/21 13:10:55 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/26 16:24:20 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,32 @@ void	test_tokenize(char* input, char **envp)
 	for (i = 0; result[i] != NULL; i++)
 		free(result[i]);
 	free(result);
+}
+
+void test_parser(t_parsed *head) 
+{
+    t_parsed *current = head;
+    while (current != NULL) {
+        printf("\n\tCommand:\n");
+        for (int i = 0; current->args[i] != NULL; i++) {
+            printf("  %s\n", current->args[i]);
+        }
+
+        printf("Operation: ");
+        switch (current->op) {
+            case NONE: printf("NONE"); break;
+            case PIPE: printf("PIPE"); break;
+            case RED_IN: printf("RED_IN"); break;
+            case RED_OUT: printf("RED_OUT"); break;
+            case RED_APP: printf("RED_APP"); break;
+            case HEREDOC: printf("HEREDOC"); break;
+            default: printf("UNKNOWN"); break;
+        }
+        printf("\n\n");
+
+        t_parsed *next = current->next;
+        free(current->args);  // Free the array of arguments
+        free(current);  // Free the node itself
+        current = next;  // Move to the next node
+    }
 }
