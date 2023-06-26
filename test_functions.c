@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:59:43 by x230              #+#    #+#             */
-/*   Updated: 2023/06/26 16:24:20 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/26 16:48:30 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,9 @@ void	test_tokenize(char* input, char **envp)
 void test_parser(t_parsed *head) 
 {
     t_parsed *current = head;
+	int i = 0;
     while (current != NULL) {
-        printf("\n\tCommand:\n");
+        printf("\n\tCommand %d:\n", i);
         for (int i = 0; current->args[i] != NULL; i++) {
             printf("  %s\n", current->args[i]);
         }
@@ -55,11 +56,12 @@ void test_parser(t_parsed *head)
             case HEREDOC: printf("HEREDOC"); break;
             default: printf("UNKNOWN"); break;
         }
-        printf("\n\n");
+        printf("\n");
 
         t_parsed *next = current->next;
         free(current->args);  // Free the array of arguments
         free(current);  // Free the node itself
         current = next;  // Move to the next node
+		i++;
     }
 }

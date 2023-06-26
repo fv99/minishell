@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:38:20 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/26 16:28:28 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/26 16:48:52 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ t_parsed *fill_list(char **args)
     t_parsed    *head = NULL;
     t_parsed    *tail = NULL;
     t_ops       curr;
-    t_ops       op = NONE;
     int         i;
     int         j;
 
@@ -70,13 +69,12 @@ t_parsed *fill_list(char **args)
         if (curr != NONE)
         {
             cmds[j] = NULL;
-            new = new_parser_node(cmds, op);
+            new = new_parser_node(cmds, curr);
             if (head == NULL)
                 head = new;
             else
                 tail->next = new;
             tail = new;
-            op = curr;
             cmds = malloc(sizeof(char *) * ARG_SIZE);
             j = 0;
         }
@@ -85,7 +83,7 @@ t_parsed *fill_list(char **args)
         i++;
     }
     cmds[j] = NULL;
-    new = new_parser_node(cmds, op);
+    new = new_parser_node(cmds, NONE);
     if (head == NULL)
         head = new;
     else
