@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/26 16:07:33 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/27 14:05:48 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,29 +33,34 @@ void    shell_loop(void)
             break;
 		if (line && *line)
             add_history(line);
-		test_tokenize(line, __environ);
+		// test_tokenize(line, __environ);
 		ebloid = lexer(line, __environ);
 		head = fill_list(ebloid);
-		test_parser(head);
+		// test_parser(head);
+		check_opts(head, __environ);
 		free(line);
 	}
 }
 
-/* // check for pipes or redirects
-int	check_opts(command *cmd, char **envp)
+// check for pipes or redirects
+int	check_opts(t_parsed *cmd, char **envp)
 {
-	if (cmd->op == PIPE)
-		execute_pipe(cmd, envp);
-	else if (cmd->op == RED_IN || cmd->op == RED_OUT || cmd->op == RED_APP)
-		execute_redirect(cmd, envp);
-
-	else
+	// if (cmd->op == PIPE)
+	// 	execute_pipe(cmd, envp);
+	// else if (cmd->op == RED_IN)
+	// 	execute_red_in(cmd, envp);
+	// else if (cmd->op == RED_OUT)
+	// 	execute_red_out(cmd, envp)
+	// else if (cmd->op == RED_APP)
+	// 	execute_red_app(cmd, envp);
+	// else if (cmd->op == HEREDOC)
+	// 	execute_heredoc(cmd, envp);
+	// else
 		execute(cmd, envp);
 	return (1);
-} */
+}
 
-/* // need to make it so args passed are only until pipe or other delim
-int	execute(command *cmd, char **envp)
+int	execute(t_parsed *cmd, char **envp)
 {
 	char	*path;
 	pid_t	pid;
@@ -85,7 +90,7 @@ int	execute(command *cmd, char **envp)
 	}
 	free(path);
 	return (1);
-} */
+}
 
 
 // Gets PATH environment variable and saves into path_env

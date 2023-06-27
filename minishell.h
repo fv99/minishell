@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/26 16:52:07 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/27 13:40:46 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,10 @@ void	ft_free_matrix(char ***m);
 // minishell.c
 
 void    shell_loop(void);
+
+int		check_opts(t_parsed *cmd, char **envp);
+
+int		execute(t_parsed *cmd, char **envp);
 
 char	*get_path(char *cmd, char **envp);
 
