@@ -6,7 +6,7 @@
 #    By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/19 12:15:10 by fvonsovs          #+#    #+#              #
-#    Updated: 2023/06/26 16:08:58 by fvonsovs         ###   ########.fr        #
+#    Updated: 2023/06/27 14:08:08 by fvonsovs         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ RM			=	rm -f
 LIBFT		=	./libft/libft.a
 
 ifeq ($(UNAME_S),Linux)
-CFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g -L/usr/include -lreadline
+CFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g -I./ -lreadline
 endif
 ifeq ($(UNAME_S),Darwin)
 CFLAGS		=	-lreadline
