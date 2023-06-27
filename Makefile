@@ -19,11 +19,14 @@ LIBC		=	ar -cq
 RM			=	rm -f
 LIBFT		=	./libft/libft.a
 
+# Common flags
+CFLAGS		=	-Wall -Wextra -Werror -I./
+# Linker flags
+LDFLAGS		=	-lreadline
+
 ifeq ($(UNAME_S),Linux)
-CFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g -I./ -lreadline
-endif
-ifeq ($(UNAME_S),Darwin)
-CFLAGS		=	-lreadline
+CFLAGS		+=	-fsanitize=address -g
+LDFLAGS		+=	-fsanitize=address -g
 endif
 
 # Colors
@@ -41,7 +44,7 @@ $(NAME): ${OBJS}
 	@echo "$(YELLOW)Compiling libft...$(RESET)"
 	make -C ./libft
 	@echo "$(YELLOW)Linking objects...$(RESET)"
-	@${CC} ${CFLAGS} -o ${NAME} ${OBJS} ${LIBFT}
+	@${CC} ${OBJS} ${LDFLAGS} -o ${NAME} ${LIBFT}
 	@echo "$(GREEN)Compilation successful.$(RESET)"
 
 clean: 
