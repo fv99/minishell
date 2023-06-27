@@ -3,10 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+<<<<<<< HEAD
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
 /*   Updated: 2023/06/27 15:25:02 by phelebra         ###   ########.fr       */
+=======
+/*   By: phelebra <phelebra@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
+/*   Updated: 2023/06/27 15:53:36 by phelebra         ###   ########.fr       */
+>>>>>>> e9c3145 (improved prompt)
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +35,7 @@ void    shell_loop(void)
 	status = 1;
 	while (status)
 	{
-		line = readline("> ");
+		line = readline("\033[30m\033[101;5;7m⛧minihell⛧\033[0m\033[31m>\033[0m ");
         if (!line) // if readline returns NULL, it means we hit an EOF (like Ctrl+D)
             break;
 		if (line && *line)
