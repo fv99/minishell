@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: phelebra <phelebra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/27 14:05:48 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/27 16:11:21 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,21 +23,21 @@ void    shell_loop(void)
     char    	*line;
 	char		**ebloid;
     int     	status;
-	extern char **__environ;	// our only global variable ?
+	extern char **environ;	// our only global variable ?
 
 	status = 1;
 	while (status)
 	{
-		line = readline("> ");
+		line = readline("\033[30m\033[101;5;7m⛧minihell⛧\033[0m\033[31m>\033[0m ");
         if (!line) // if readline returns NULL, it means we hit an EOF (like Ctrl+D)
             break;
 		if (line && *line)
             add_history(line);
 		// test_tokenize(line, __environ);
-		ebloid = lexer(line, __environ);
+		ebloid = lexer(line, environ);
 		head = fill_list(ebloid);
 		// test_parser(head);
-		check_opts(head, __environ);
+		check_opts(head, environ);
 		free(line);
 	}
 }
