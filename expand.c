@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: phelebra <phelebra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 16:24:28 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/20 16:26:10 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/06/29 13:57:02 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,14 @@ char	*expand_arg(char *str, int counter, char **envp)
 	while (!ft_strchr("\'\" ", str[counter + argname_len + 1]))
 		argname_len++;
 	argname = ft_substr (str, counter + 1, argname_len);
-	arg = get_arg(argname, envp);
+	if (strcmp(argname, "0") == 0)
+		arg = ft_strdup("⛧minihell⛧");
+	else if (strcmp(argname, "?") == 0)
+		arg = ft_strdup("1");
+	else if (strcmp(argname, "") == 0)
+		arg = ft_strdup("");
+	else
+		arg = get_arg(argname, envp);
 	newstr = ft_calloc((ft_strlen(str) - argname_len - 1)
 			+ ft_strlen(arg) + 1, sizeof(char));
 	ft_strlcpy(newstr, str, counter + 1);
