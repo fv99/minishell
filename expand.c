@@ -6,7 +6,7 @@
 /*   By: phelebra <phelebra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 16:24:28 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/29 13:57:02 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/06/29 14:34:09 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,6 @@ char	*expand_arg(char *str, int counter, char **envp)
 		arg = ft_strdup("⛧minihell⛧");
 	else if (strcmp(argname, "?") == 0)
 		arg = ft_strdup("1");
-	else if (strcmp(argname, "") == 0)
-		arg = ft_strdup("");
 	else
 		arg = get_arg(argname, envp);
 	newstr = ft_calloc((ft_strlen(str) - argname_len - 1)
@@ -102,5 +100,6 @@ char *get_arg(char *argname, char **envp)
             return &envp[i][argname_len + 1];
         i++;
     }
-    return NULL;
+	argname = "";
+    return argname;
 }
