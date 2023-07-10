@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/06/27 14:05:48 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/10 17:24:58 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 #define LINE_SIZE 1024
 #define PATH_SEP ":"
-#define EXEC_ERROR 42
 
 // main loop to run the shell
 void    shell_loop(void)
@@ -36,29 +35,12 @@ void    shell_loop(void)
 		// test_tokenize(line, __environ);
 		ebloid = lexer(line, __environ);
 		head = fill_list(ebloid);
-		// test_parser(head);
-		check_opts(head, __environ);
+		test_parser(head);
+		// execute_commands(head);
 		free(line);
 	}
 }
 
-// check for pipes or redirects
-int	check_opts(t_parsed *cmd, char **envp)
-{
-	// if (cmd->op == PIPE)
-	// 	execute_pipe(cmd, envp);
-	// else if (cmd->op == RED_IN)
-	// 	execute_red_in(cmd, envp);
-	// else if (cmd->op == RED_OUT)
-	// 	execute_red_out(cmd, envp)
-	// else if (cmd->op == RED_APP)
-	// 	execute_red_app(cmd, envp);
-	// else if (cmd->op == HEREDOC)
-	// 	execute_heredoc(cmd, envp);
-	// else
-		execute(cmd, envp);
-	return (1);
-}
 
 int	execute(t_parsed *cmd, char **envp)
 {

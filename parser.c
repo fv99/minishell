@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:38:20 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/26 16:57:58 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/10 17:25:31 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,25 @@
     char** = {cmd1, "blah blah", whats, 'up 'you, fvonsovs, |, wc, -l, >, >, outfile, NULL}
     
     go over array, split according to redirect, use check op to set the op type
-        parsed 1:
+        parsed 0:
             **args = {cmd1, "blah blah", whats, 'up 'you, fvonsovs, NULL}
             op = PIPE
-            next = parsed 2;
-        parsed 2:
-            **args = {wc, -l, NULL}
-            op = RED_OUT;
+            infile = 0 (default)
+            outfile = 3 (pipe write end)
+            next = parsed 1;
+        parsed 1:
+            **args = {NULL}
+            op = NONE;
+            infile = 4 (pipe read end)
+            outfile = 5 (fd corresponding to open file 'outfile')
             next = NULL;
             
     NOTE
         << will be interpreted as {<, <} and vice versa for >>
         parser should handle this
+
+    TODO
+        handle closing file descriptors after we are done with them
 */
 t_parsed *fill_list(char **args)
 {
@@ -49,10 +56,16 @@ t_parsed *fill_list(char **args)
         update_current_operation(&curr, args, &i);          // checks for heredoc and append
         if (curr != NONE)           
         {
-            cmds[j] = NULL;                                 // if found operation
-            tail = add_new_node(cmds, curr, &head, &tail);  // adds a new node to linked list
-            cmds = malloc(sizeof(char *) * ARG_SIZE);       // allocates new command array
-            j = 0;
+            if (curr == PIPE)                               // if found a pipe operation
+            {
+                cmds[j] = NULL;                             // ends current command
+                tail = add_new_node(cmds, curr, &head, &tail); // adds a new node to linked list
+                tail->outfile = 1;
+                cmds = malloc(sizeof(char *) * ARG_SIZE);   // allocates new command array
+                j = 0;
+            }
+            else if (curr == RED_OUT || curr == RED_IN || curr == RED_APP || curr == HEREDOC)
+                handle_redirection(tail, curr, args[++i]); // handle redirection and update file descriptors
         }
         else
             cmds[j++] = args[i];                            // adds argument to current command, if no operation
@@ -62,6 +75,7 @@ t_parsed *fill_list(char **args)
     add_new_node(cmds, NONE, &head, &tail);                 // adds last command to the list with op NONE
     return (head);
 }
+
 
 // checks for heredoc and append, needed for fill_list
 void update_current_operation(t_ops *curr, char **args, int *i) 
@@ -94,6 +108,8 @@ t_parsed *new_parser_node(char **args, t_ops op)
     t_parsed *new = malloc(sizeof(t_parsed));
     new->args = args;
     new->op = op;
+    new->infile = STDIN_FILENO;
+    new->outfile = STDOUT_FILENO;
     new->next = NULL;
     return (new);
 }
@@ -112,6 +128,28 @@ t_ops check_op(char *str)
 	if (!strcmp(str, "<<"))
 		return HEREDOC;
 	return NONE;
+}
+
+int open_file(char *file, t_ops op)
+{
+    if (op == RED_OUT || op == RED_APP)
+        return open(file, op == RED_APP ? (O_WRONLY | O_CREAT | O_APPEND) : (O_WRONLY | O_CREAT | O_TRUNC), 0644);
+    else if (op == RED_IN)
+        return open(file, O_RDONLY);
+    return -1;
+}
+
+void handle_redirection(t_parsed *node, t_ops op, char *file)
+{
+    int fd = open_file(file, op);
+    if (fd != -1)
+    {
+        if (op == RED_OUT || op == RED_APP)
+            node->outfile = fd;
+        else if (op == RED_IN)
+            node->infile = fd;
+    }
+    // Handle fd == -1 case if necessary
 }
 
 /* // strips quotes from src string

@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/27 13:40:46 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/10 17:18:46 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,12 @@
 #include <sys/fcntl.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+
+#define EXEC_ERROR 126
+#define NDIR "No such file or directory"
+#define NPERM "Permission denied"
+#define WRITE_END 1
+#define READ_END 0
 
 // structs go here
 
@@ -102,6 +108,11 @@ t_parsed *new_parser_node(char **args, t_ops op);
 
 t_ops	check_op(char *str);
 
+int open_file(char *file, t_ops op);
+
+void handle_redirection(t_parsed *node, t_ops op, char *file);
+
+
 // void	sanitize_quotes(char *src, char *dest);
 
 // utils_1.c
@@ -143,6 +154,10 @@ int		execute(t_parsed *cmd, char **envp);
 char	*get_path(char *cmd, char **envp);
 
 char	*get_path_token(char *cmd, char *path_env, int cmd_len);
+
+// execute.c
+
+
 
 // builtins_1.c
 

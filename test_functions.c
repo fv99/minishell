@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:59:43 by x230              #+#    #+#             */
-/*   Updated: 2023/06/26 16:48:30 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/10 16:56:00 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,9 @@ void test_parser(t_parsed *head)
             default: printf("UNKNOWN"); break;
         }
         printf("\n");
+
+        printf("infile: %i\n", current->infile);
+        printf("outfile: %i\n", current->outfile);
 
         t_parsed *next = current->next;
         free(current->args);  // Free the array of arguments
