@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:38:20 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/10 17:25:31 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/10 18:19:43 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,7 @@ t_parsed *fill_list(char **args)
     while (args[i] != NULL)
     {
         curr = check_op(args[i]);                           // checks operation
-        update_current_operation(&curr, args, &i);          // checks for heredoc and append
-        if (curr != NONE)           
-        {
+        if(curr != NONE) {
             if (curr == PIPE)                               // if found a pipe operation
             {
                 cmds[j] = NULL;                             // ends current command
@@ -65,10 +63,14 @@ t_parsed *fill_list(char **args)
                 j = 0;
             }
             else if (curr == RED_OUT || curr == RED_IN || curr == RED_APP || curr == HEREDOC)
+            {
+                update_current_operation(&curr, args, &i, tail); // checks for operations sets infiles
                 handle_redirection(tail, curr, args[++i]); // handle redirection and update file descriptors
+            }
         }
-        else
+        else {
             cmds[j++] = args[i];                            // adds argument to current command, if no operation
+        }
         i++;
     }
     cmds[j] = NULL;
@@ -78,17 +80,25 @@ t_parsed *fill_list(char **args)
 
 
 // checks for heredoc and append, needed for fill_list
-void update_current_operation(t_ops *curr, char **args, int *i) 
+void update_current_operation(t_ops *curr, char **args, int *i, t_parsed *node) 
 {
     if ((*curr == RED_OUT && args[*i + 1] != NULL) && check_op(args[*i + 1]) == RED_OUT) 
     {
         *curr = RED_APP;
-        (*i)++;
+        node = get_outfile2(node, args, i);
+    } 
+    else if ((*curr == RED_OUT && args[*i + 1] != NULL) && check_op(args[*i + 1]) == NONE) 
+    {
+        node = get_outfile1(node, args, i);
     } 
     else if ((*curr == RED_IN && args[*i + 1] != NULL) && check_op(args[*i + 1]) == RED_IN) 
     {
         *curr = HEREDOC;
-        (*i)++;
+        node = get_infile2(node, args, i);
+    } 
+    else if ((*curr == RED_IN && args[*i + 1] != NULL) && check_op(args[*i + 1]) == NONE) 
+    {
+        node = get_infile1(node, args, i);
     }
 }
 
@@ -141,16 +151,30 @@ int open_file(char *file, t_ops op)
 
 void handle_redirection(t_parsed *node, t_ops op, char *file)
 {
-    int fd = open_file(file, op);
+    int flags[2];
+    if (op == RED_OUT) {
+        flags[0] = 1;
+        flags[1] = 0;
+    } else if (op == RED_APP) {
+        flags[0] = 1;
+        flags[1] = 1;
+    } else if (op == RED_IN) {
+        flags[0] = 0;
+        flags[1] = 0;
+    }
+
+    int fd = get_fd((op == RED_OUT || op == RED_APP) ? node->outfile : node->infile, file, flags);
     if (fd != -1)
     {
         if (op == RED_OUT || op == RED_APP)
-            node->outfile = fd;
+            node->outfile = fd; // set outfile to the file descriptor that corresponds to the opened file
         else if (op == RED_IN)
-            node->infile = fd;
+            node->infile = fd;  // set infile to the file descriptor that corresponds to the opened file
     }
     // Handle fd == -1 case if necessary
 }
+
+
 
 /* // strips quotes from src string
 void sanitize_quotes(char *src, char *dest)

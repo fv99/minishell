@@ -3,17 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:17:51 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/05/30 16:08:44 by x230             ###   ########.fr       */
+/*   Updated: 2023/07/10 17:56:21 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int	g_status;
+
 int	main(void)
 {
+	g_status = 1;
 	shell_loop();
-	return (0);
+	return (g_status);
 }

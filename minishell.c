@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/07/10 17:24:58 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/10 18:06:39 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,32 +15,35 @@
 #define LINE_SIZE 1024
 #define PATH_SEP ":"
 
-// main loop to run the shell
-void    shell_loop(void)
-{
-	t_parsed	*head;
-    char    	*line;
-	char		**ebloid;
-    int     	status;
-	extern char **__environ;	// our only global variable ?
+extern int	g_status;
 
-	status = 1;
-	while (status)
-	{
-		line = readline("> ");
+// main loop to run the shell
+void shell_loop(void)
+{
+    t_parsed *head;
+    char *line;
+    char **ebloid;
+    extern char **__environ;
+
+    g_status = 1;
+    while (g_status)
+    {
+        line = readline("> ");
         if (!line) // if readline returns NULL, it means we hit an EOF (like Ctrl+D)
             break;
-		if (line && *line)
+        if (line && *line)
             add_history(line);
-		// test_tokenize(line, __environ);
-		ebloid = lexer(line, __environ);
-		head = fill_list(ebloid);
-		test_parser(head);
-		// execute_commands(head);
-		free(line);
-	}
-}
 
+        // test_tokenize(line, __environ);
+
+        ebloid = lexer(line, __environ);
+        head = fill_list(ebloid);
+        test_parser(head);
+
+        // execute_commands(head);
+        free(line);
+    }
+}
 
 int	execute(t_parsed *cmd, char **envp)
 {

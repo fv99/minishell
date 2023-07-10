@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/10 17:18:46 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/10 17:52:10 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@
 #include <readline/history.h>
 
 #define EXEC_ERROR 126
-#define NDIR "No such file or directory"
-#define NPERM "Permission denied"
 #define WRITE_END 1
 #define READ_END 0
 
@@ -98,7 +96,7 @@ char	*get_arg(char *argname, char **envp);
 
 // parser.c
 
-void	update_current_operation(t_ops *curr, char **args, int *i);
+void update_current_operation(t_ops *curr, char **args, int *i, t_parsed *node);
 
 t_parsed *add_new_node(char **cmds, t_ops curr, t_parsed **head, t_parsed **tail);
 
@@ -156,6 +154,22 @@ char	*get_path(char *cmd, char **envp);
 char	*get_path_token(char *cmd, char *path_env, int cmd_len);
 
 // execute.c
+
+void	*mini_perror(int err_type, char *param, int err);
+
+char	*get_here_str(char *str[2], size_t len, char *limit, char *warn);
+
+int		get_here_doc(char *str[2], char *aux[2]);
+
+int		get_fd(int oldfd, char *path, int flags[2]);
+
+t_parsed	*get_outfile1(t_parsed *node, char **args, int *i);
+
+t_parsed	*get_outfile2(t_parsed *node, char **args, int *i);
+
+t_parsed	*get_infile1(t_parsed *node, char **args, int *i);
+
+t_parsed	*get_infile2(t_parsed *node, char **args, int *i);
 
 
 

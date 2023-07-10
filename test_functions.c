@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:59:43 by x230              #+#    #+#             */
-/*   Updated: 2023/07/10 16:56:00 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/10 18:05:08 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,15 @@ void	test_tokenize(char* input, char **envp)
 	}
 
 	i = 0;
-	while (result[i] != NULL)
+	while (1) // loop will break when result[i] is NULL inside the loop
 	{
-		printf("Token %d: %s\n", i, result[i]);
+		if(result[i] != NULL)
+			printf("Token %d: %s\n", i, result[i]);
+		else
+		{
+			printf("Token %d: NULL\n", i); // print NULL case
+			break;
+		}
 		++i;
 	}
 
