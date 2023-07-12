@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:46:54 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/12 13:37:31 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/12 15:41:53 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	free_array(char	**ptr)
 	size_t	i;
 
 	i = 0;
-	while (ptr[i])
+	while (ptr[i] != NULL)
 	{
 		free(ptr[i]);
 		i++;

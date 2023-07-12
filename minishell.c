@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/07/12 15:21:51 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/12 15:43:22 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void shell_loop(void)
     extern char **__environ;
 
     g_status = 1;
-    while (g_status)
+    while (g_status > 0)
     {
         line = readline("> ");
         if (!line) // if readline returns NULL, it means we hit an EOF (like Ctrl+D)
@@ -39,8 +39,8 @@ void shell_loop(void)
         ebloid = lexer(line, __environ);
         head = fill_list(ebloid);
         // test_parser(head);
-
 		execute_commands(head, __environ);
+		free_array(ebloid);
         free(line);
     }
 }

@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:38:20 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/12 15:23:08 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/12 15:44:18 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ t_parsed *fill_list(char **args)
         tail = add_new_node(cmds, NONE, &head, &tail); // Adds last node to linked list
     }
     tail->next = NULL; // Ends the list
+    // free(args);
     return (head);
 }
 
