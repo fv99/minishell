@@ -3,18 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   utils_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:46:54 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/07 14:26:15 by x230             ###   ########.fr       */
+/*   Updated: 2023/07/12 13:37:31 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	you_fucked_up(char *msg)
+extern int	g_status;
+
+int	you_fucked_up(char *msg, int status)
 {
-	printf("\tERROR: %s\n", msg);
+	g_status = status;
+	printf("\tERROR status %i: %s\n", status, msg);
 	exit(1);
 }
 

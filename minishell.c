@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/07/10 18:06:39 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/12 15:21:51 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,19 +38,65 @@ void shell_loop(void)
 
         ebloid = lexer(line, __environ);
         head = fill_list(ebloid);
-        test_parser(head);
+        // test_parser(head);
 
-        // execute_commands(head);
+		execute_commands(head, __environ);
         free(line);
     }
 }
 
+void	execute_commands(t_parsed *head, char **envp)
+{
+	t_parsed *current;
+	t_parsed *next;
+
+	current = head;
+	while (current != NULL)
+	{
+		next = current->next;
+		pipex2(current, envp);
+		wait(NULL);
+        free(current->args);  // Free the array of arguments
+        free(current);  // Free the node itself
+        current = next;  // Move to the next node
+	}
+}
+
+void	pipex2(t_parsed *curr, char **envp)
+{
+	pid_t	pid;
+	int		pid_fd[2];
+	char	*path;
+
+	if (pipe(pid_fd) == -1)
+		exit(0);
+	pid = fork();
+	if (pid == -1)
+		exit(0);
+	path = get_path(curr->args[0], envp);
+	if (!pid)
+	{
+		close(pid_fd[0]);
+		dup2(pid_fd[1], 1);
+		execve(path, curr->args, envp);
+		free(path);
+	}
+	else
+	{
+		close(pid_fd[1]);
+		dup2(pid_fd[0], 0);
+		free(path);
+	}
+}
+
+/* 
+// only single commands
 int	execute(t_parsed *cmd, char **envp)
 {
 	char	*path;
 	pid_t	pid;
 	int		status;
-
+										  
 	if (check_builtins(cmd->args, envp)) // check for builtins first
         return (1);
 	path = get_path(cmd->args[0], envp);
@@ -65,7 +111,7 @@ int	execute(t_parsed *cmd, char **envp)
 		}
 	}
 	else if (pid < 0)
-		you_fucked_up("Fork failed");
+		you_fucked_up("Fork failed", 127);
 	else
 	{
 		// parent process
@@ -76,7 +122,7 @@ int	execute(t_parsed *cmd, char **envp)
 	free(path);
 	return (1);
 }
-
+ */
 
 // Gets PATH environment variable and saves into path_env
 // Loops through each directory in path_env separated by PATH_SEP

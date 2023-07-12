@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:38:20 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/10 18:19:43 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/12 15:23:08 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,29 +52,28 @@ t_parsed *fill_list(char **args)
     cmds = malloc(sizeof(char *) * ARG_SIZE);               // allocates new command array
     while (args[i] != NULL)
     {
-        curr = check_op(args[i]);                           // checks operation
-        if(curr != NONE) {
-            if (curr == PIPE)                               // if found a pipe operation
-            {
-                cmds[j] = NULL;                             // ends current command
-                tail = add_new_node(cmds, curr, &head, &tail); // adds a new node to linked list
-                tail->outfile = 1;
-                cmds = malloc(sizeof(char *) * ARG_SIZE);   // allocates new command array
-                j = 0;
-            }
+        curr = check_op(args[i]); // Update current operation
+        if (curr != NONE)
+        {
+            cmds[j] = NULL; // Ends current command
+            tail = add_new_node(cmds, curr, &head, &tail); // Adds a new node to linked list
+            cmds = malloc(sizeof(char *) * ARG_SIZE); // Allocates new command array
+            j = 0;
+            if (curr == PIPE) // If found a pipe operation
+                tail->outfile = 3; // Pipe output to next command
             else if (curr == RED_OUT || curr == RED_IN || curr == RED_APP || curr == HEREDOC)
-            {
-                update_current_operation(&curr, args, &i, tail); // checks for operations sets infiles
-                handle_redirection(tail, curr, args[++i]); // handle redirection and update file descriptors
-            }
+                update_current_operation(&curr, args, &i, tail); // Checks for operations and sets infiles
         }
-        else {
-            cmds[j++] = args[i];                            // adds argument to current command, if no operation
-        }
+        else
+            cmds[j++] = args[i]; // Adds argument to current command, if no operation
         i++;
     }
-    cmds[j] = NULL;
-    add_new_node(cmds, NONE, &head, &tail);                 // adds last command to the list with op NONE
+    if (j != 0) // If the last command is not empty
+    {
+        cmds[j] = NULL; // Ends last command
+        tail = add_new_node(cmds, NONE, &head, &tail); // Adds last node to linked list
+    }
+    tail->next = NULL; // Ends the list
     return (head);
 }
 
@@ -88,18 +87,14 @@ void update_current_operation(t_ops *curr, char **args, int *i, t_parsed *node)
         node = get_outfile2(node, args, i);
     } 
     else if ((*curr == RED_OUT && args[*i + 1] != NULL) && check_op(args[*i + 1]) == NONE) 
-    {
         node = get_outfile1(node, args, i);
-    } 
     else if ((*curr == RED_IN && args[*i + 1] != NULL) && check_op(args[*i + 1]) == RED_IN) 
     {
         *curr = HEREDOC;
         node = get_infile2(node, args, i);
     } 
     else if ((*curr == RED_IN && args[*i + 1] != NULL) && check_op(args[*i + 1]) == NONE) 
-    {
         node = get_infile1(node, args, i);
-    }
 }
 
 // adds new node to linked list with current commands and operations
@@ -139,42 +134,6 @@ t_ops check_op(char *str)
 		return HEREDOC;
 	return NONE;
 }
-
-int open_file(char *file, t_ops op)
-{
-    if (op == RED_OUT || op == RED_APP)
-        return open(file, op == RED_APP ? (O_WRONLY | O_CREAT | O_APPEND) : (O_WRONLY | O_CREAT | O_TRUNC), 0644);
-    else if (op == RED_IN)
-        return open(file, O_RDONLY);
-    return -1;
-}
-
-void handle_redirection(t_parsed *node, t_ops op, char *file)
-{
-    int flags[2];
-    if (op == RED_OUT) {
-        flags[0] = 1;
-        flags[1] = 0;
-    } else if (op == RED_APP) {
-        flags[0] = 1;
-        flags[1] = 1;
-    } else if (op == RED_IN) {
-        flags[0] = 0;
-        flags[1] = 0;
-    }
-
-    int fd = get_fd((op == RED_OUT || op == RED_APP) ? node->outfile : node->infile, file, flags);
-    if (fd != -1)
-    {
-        if (op == RED_OUT || op == RED_APP)
-            node->outfile = fd; // set outfile to the file descriptor that corresponds to the opened file
-        else if (op == RED_IN)
-            node->infile = fd;  // set infile to the file descriptor that corresponds to the opened file
-    }
-    // Handle fd == -1 case if necessary
-}
-
-
 
 /* // strips quotes from src string
 void sanitize_quotes(char *src, char *dest)

@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/10 17:52:10 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/12 14:56:56 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,26 +96,25 @@ char	*get_arg(char *argname, char **envp);
 
 // parser.c
 
+t_parsed *fill_list(char **args);
+
 void update_current_operation(t_ops *curr, char **args, int *i, t_parsed *node);
 
 t_parsed *add_new_node(char **cmds, t_ops curr, t_parsed **head, t_parsed **tail);
 
-t_parsed *fill_list(char **args);
 
 t_parsed *new_parser_node(char **args, t_ops op);
 
+t_parsed *add_null_node(t_parsed **head, t_parsed **tail);
+
 t_ops	check_op(char *str);
-
-int open_file(char *file, t_ops op);
-
-void handle_redirection(t_parsed *node, t_ops op, char *file);
 
 
 // void	sanitize_quotes(char *src, char *dest);
 
 // utils_1.c
 
-int		you_fucked_up(char *msg);
+int		you_fucked_up(char *msg, int status);
 
 void	free_array(char	**ptr);
 
@@ -145,9 +144,14 @@ void	ft_free_matrix(char ***m);
 
 void    shell_loop(void);
 
-int		check_opts(t_parsed *cmd, char **envp);
+void	execute_commands(t_parsed *head, char **envp);
 
-int		execute(t_parsed *cmd, char **envp);
+
+void	pipex2(t_parsed *curr, char **envp);
+
+// void	execute_node(t_parsed *node, char **envp);
+
+// int		execute(t_parsed *cmd, char **envp);
 
 char	*get_path(char *cmd, char **envp);
 
