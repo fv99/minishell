@@ -6,14 +6,12 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/07/14 17:16:12 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/14 17:38:21 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /* 
 	TODO LIST
-	- segfault with empty input
-	- after pipes readline set to null automatically
 	- redirects and heredoc
 	- builtins dont work with new linked list parser
  */
@@ -31,30 +29,33 @@ void shell_loop(void)
     char *line;
     char **ebloid;
     extern char **__environ;
+	int save_fd;
 
     g_status = 1;
     while (1)
     {
+        save_fd = dup(STDIN_FILENO); // Duplicate the original file descriptor
         line = readline("> ");
-
-		printf("\nline: %s", line);
-		
         if (line == NULL)
+        {
+            close(save_fd); // Close the duplicated file descriptor before breaking the loop
             break;
+        }
         if (line && *line)
+		{
             add_history(line);
-        // test_tokenize(line, __environ);
-
-        ebloid = lexer(line, __environ);
-        head = fill_list(ebloid);
-        // test_parser(head);
-
-        execute_commands(head, __environ);
-        free_array(ebloid);
-        free(line);
+			// test_tokenize(line, __environ);
+			ebloid = lexer(line, __environ);
+			head = fill_list(ebloid);
+			// test_parser(head);
+			execute_commands(head, __environ);
+			free_array(ebloid);
+		}
+		free(line);
+        dup2(save_fd, STDIN_FILENO); // Restore the original file descriptor
+        close(save_fd); // Close the duplicated file descriptor
     }
 }
-
 
 void	execute_commands(t_parsed *head, char **envp)
 {
