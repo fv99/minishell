@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/07/14 17:38:21 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/14 17:45:19 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@ void shell_loop(void)
     t_parsed *head;
     char *line;
     char **ebloid;
-    extern char **__environ;
+    extern char **environ;
 	int save_fd;
 
     g_status = 1;
     while (1)
     {
         save_fd = dup(STDIN_FILENO); // Duplicate the original file descriptor
-        line = readline("> ");
+        line = readline("\033[30m\033[101;5;7m⛧minihell⛧\033[0m\033[31m>\033[0m ");
         if (line == NULL)
         {
             close(save_fd); // Close the duplicated file descriptor before breaking the loop
@@ -45,10 +45,10 @@ void shell_loop(void)
 		{
             add_history(line);
 			// test_tokenize(line, __environ);
-			ebloid = lexer(line, __environ);
+			ebloid = lexer(line, environ);
 			head = fill_list(ebloid);
 			// test_parser(head);
-			execute_commands(head, __environ);
+			execute_commands(head, environ);
 			free_array(ebloid);
 		}
 		free(line);

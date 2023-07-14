@@ -3,7 +3,7 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+         #
+#    By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/19 12:15:10 by fvonsovs          #+#    #+#              #
 #    Updated: 2023/07/12 15:33:22 by fvonsovs         ###   ########.fr        #
@@ -28,6 +28,10 @@ LDFLAGS		=	-lreadline
 ifeq ($(UNAME_S),Linux)
 CFLAGS		+=	-fsanitize=address -g
 LDFLAGS		+=	-fsanitize=address -g
+endif
+ifeq ($(UNAME_S),Darwin)
+CFLAGS		+=	-fsanitize=address -g
+LDFLAGS		+=	-lSystem -fsanitize=address -g
 endif
 
 # Colors

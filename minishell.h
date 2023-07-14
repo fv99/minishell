@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
 /*   Updated: 2023/07/14 16:06:15 by fvonsovs         ###   ########.fr       */
