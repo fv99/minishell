@@ -6,10 +6,17 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/07/12 15:43:22 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/14 17:16:12 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+/* 
+	TODO LIST
+	- segfault with empty input
+	- after pipes readline set to null automatically
+	- redirects and heredoc
+	- builtins dont work with new linked list parser
+ */
 #include "minishell.h"
 
 #define LINE_SIZE 1024
@@ -26,24 +33,28 @@ void shell_loop(void)
     extern char **__environ;
 
     g_status = 1;
-    while (g_status > 0)
+    while (1)
     {
         line = readline("> ");
-        if (!line) // if readline returns NULL, it means we hit an EOF (like Ctrl+D)
+
+		printf("\nline: %s", line);
+		
+        if (line == NULL)
             break;
         if (line && *line)
             add_history(line);
-
         // test_tokenize(line, __environ);
 
         ebloid = lexer(line, __environ);
         head = fill_list(ebloid);
         // test_parser(head);
-		execute_commands(head, __environ);
-		free_array(ebloid);
+
+        execute_commands(head, __environ);
+        free_array(ebloid);
         free(line);
     }
 }
+
 
 void	execute_commands(t_parsed *head, char **envp)
 {
@@ -54,8 +65,10 @@ void	execute_commands(t_parsed *head, char **envp)
 	while (current != NULL)
 	{
 		next = current->next;
-		pipex2(current, envp);
-		wait(NULL);
+		if (current->op == PIPE)
+			pipex2(current, envp);
+		else
+			execute(current, envp);
         free(current->args);  // Free the array of arguments
         free(current);  // Free the node itself
         current = next;  // Move to the next node
@@ -69,10 +82,10 @@ void	pipex2(t_parsed *curr, char **envp)
 	char	*path;
 
 	if (pipe(pid_fd) == -1)
-		exit(0);
+		you_fucked_up("Pipe error", 9);
 	pid = fork();
 	if (pid == -1)
-		exit(0);
+		you_fucked_up("Fork error", 8);
 	path = get_path(curr->args[0], envp);
 	if (!pid)
 	{
@@ -85,17 +98,18 @@ void	pipex2(t_parsed *curr, char **envp)
 	{
 		close(pid_fd[1]);
 		dup2(pid_fd[0], 0);
+		waitpid(pid, &g_status, WUNTRACED);
+		if (WIFEXITED(g_status) && WEXITSTATUS(g_status) == EXEC_ERROR)
+			ft_printf("Command not found: %s \n", curr->args[0]);
 		free(path);
 	}
 }
 
-/* 
 // only single commands
 int	execute(t_parsed *cmd, char **envp)
 {
 	char	*path;
 	pid_t	pid;
-	int		status;
 										  
 	if (check_builtins(cmd->args, envp)) // check for builtins first
         return (1);
@@ -107,7 +121,8 @@ int	execute(t_parsed *cmd, char **envp)
 		if (execve(path, cmd->args, envp) == -1)
 		{
 			free(path);
-			exit(EXEC_ERROR);
+			g_status = 126;
+			exit(g_status);
 		}
 	}
 	else if (pid < 0)
@@ -115,14 +130,15 @@ int	execute(t_parsed *cmd, char **envp)
 	else
 	{
 		// parent process
-		waitpid(pid, &status, WUNTRACED);
-		if (WIFEXITED(status) && WEXITSTATUS(status) == EXEC_ERROR)
+		g_status = 1;
+		waitpid(pid, &g_status, WUNTRACED);
+		if (WIFEXITED(g_status) && WEXITSTATUS(g_status) == EXEC_ERROR)
 			ft_printf("Command not found: %s \n", cmd->args[0]);
 	}
 	free(path);
-	return (1);
+	return (g_status);
 }
- */
+
 
 // Gets PATH environment variable and saves into path_env
 // Loops through each directory in path_env separated by PATH_SEP

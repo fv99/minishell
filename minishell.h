@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/12 14:56:56 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/14 16:06:15 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,12 +146,9 @@ void    shell_loop(void);
 
 void	execute_commands(t_parsed *head, char **envp);
 
-
 void	pipex2(t_parsed *curr, char **envp);
 
-// void	execute_node(t_parsed *node, char **envp);
-
-// int		execute(t_parsed *cmd, char **envp);
+int		execute(t_parsed *cmd, char **envp);
 
 char	*get_path(char *cmd, char **envp);
 
