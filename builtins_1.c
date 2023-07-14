@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_1.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 15:02:20 by x230              #+#    #+#             */
-/*   Updated: 2023/06/12 13:09:57 by x230             ###   ########.fr       */
+/*   Updated: 2023/07/12 15:32:20 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	builtin_cd(char **args)
 	char		*cmd;
 		
 	if (home_dir == NULL)
-		you_fucked_up("Could not get home directory");
+		you_fucked_up("Could not get home directory", -1);
 	// if dir unspecified change to home
 	if (args[1] == NULL || strcmp(args[1], "~") == 0)
 	{
@@ -69,7 +69,7 @@ char *builtin_cd_expand_home(char **args, char *home_dir)
 
 	expanded = malloc(strlen(home_dir) + strlen(args[1]) + 1);
 	if (!expanded)
-		you_fucked_up("failed to allocate in builtin_cd_expand_home");
+		you_fucked_up("failed to allocate in builtin_cd_expand_home", -1);
 	ft_strcpy(expanded, home_dir);
 	ft_strcat(expanded, args[1] + 1);
 	// printf("expanded dir: %s\n", expanded);

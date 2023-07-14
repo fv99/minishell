@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/27 15:19:13 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/14 16:06:15 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,10 @@
 #include <sys/fcntl.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+
+#define EXEC_ERROR 126
+#define WRITE_END 1
+#define READ_END 0
 
 // structs go here
 
@@ -92,21 +96,25 @@ char	*get_arg(char *argname, char **envp);
 
 // parser.c
 
-void	update_current_operation(t_ops *curr, char **args, int *i);
+t_parsed *fill_list(char **args);
+
+void update_current_operation(t_ops *curr, char **args, int *i, t_parsed *node);
 
 t_parsed *add_new_node(char **cmds, t_ops curr, t_parsed **head, t_parsed **tail);
 
-t_parsed *fill_list(char **args);
 
 t_parsed *new_parser_node(char **args, t_ops op);
 
+t_parsed *add_null_node(t_parsed **head, t_parsed **tail);
+
 t_ops	check_op(char *str);
+
 
 // void	sanitize_quotes(char *src, char *dest);
 
 // utils_1.c
 
-int		you_fucked_up(char *msg);
+int		you_fucked_up(char *msg, int status);
 
 void	free_array(char	**ptr);
 
@@ -136,13 +144,35 @@ void	ft_free_matrix(char ***m);
 
 void    shell_loop(void);
 
-int		check_opts(t_parsed *cmd, char **envp);
+void	execute_commands(t_parsed *head, char **envp);
+
+void	pipex2(t_parsed *curr, char **envp);
 
 int		execute(t_parsed *cmd, char **envp);
 
 char	*get_path(char *cmd, char **envp);
 
 char	*get_path_token(char *cmd, char *path_env, int cmd_len);
+
+// execute.c
+
+void	*mini_perror(int err_type, char *param, int err);
+
+char	*get_here_str(char *str[2], size_t len, char *limit, char *warn);
+
+int		get_here_doc(char *str[2], char *aux[2]);
+
+int		get_fd(int oldfd, char *path, int flags[2]);
+
+t_parsed	*get_outfile1(t_parsed *node, char **args, int *i);
+
+t_parsed	*get_outfile2(t_parsed *node, char **args, int *i);
+
+t_parsed	*get_infile1(t_parsed *node, char **args, int *i);
+
+t_parsed	*get_infile2(t_parsed *node, char **args, int *i);
+
+
 
 // builtins_1.c
 

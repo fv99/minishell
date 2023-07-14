@@ -3,18 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   utils_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:46:54 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/07 14:26:15 by x230             ###   ########.fr       */
+/*   Updated: 2023/07/12 15:41:53 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	you_fucked_up(char *msg)
+extern int	g_status;
+
+int	you_fucked_up(char *msg, int status)
 {
-	printf("\tERROR: %s\n", msg);
+	g_status = status;
+	printf("\tERROR status %i: %s\n", status, msg);
 	exit(1);
 }
 
@@ -23,7 +26,7 @@ void	free_array(char	**ptr)
 	size_t	i;
 
 	i = 0;
-	while (ptr[i])
+	while (ptr[i] != NULL)
 	{
 		free(ptr[i]);
 		i++;
