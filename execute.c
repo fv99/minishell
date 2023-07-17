@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 13:58:52 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/12 14:15:19 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/17 16:21:20 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	*get_here_str(char *str[2], size_t len, char *limit, char *warn)
 		str[1] = ft_strjoin(str[1], str[0]);
 		free(temp);
 		free(str[0]);
-		str[0] = readline("> ");
+		str[0] = readline("HERE_DOC > ");
 		if (!str[0])
 		{
 			printf("%s (wanted `%s\')\n", warn, limit);
