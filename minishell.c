@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/07/14 17:45:19 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/17 16:28:47 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void shell_loop(void)
         if (line && *line)
 		{
             add_history(line);
-			// test_tokenize(line, __environ);
+			// test_tokenize(line, environ);
 			ebloid = lexer(line, environ);
 			head = fill_list(ebloid);
 			// test_parser(head);
@@ -76,11 +76,11 @@ void	execute_commands(t_parsed *head, char **envp)
 	}
 }
 
-void	pipex2(t_parsed *curr, char **envp)
+void pipex2(t_parsed *curr, char **envp)
 {
-	pid_t	pid;
-	int		pid_fd[2];
-	char	*path;
+	pid_t pid;
+	int pid_fd[2];
+	char *path;
 
 	if (pipe(pid_fd) == -1)
 		you_fucked_up("Pipe error", 9);
@@ -88,17 +88,32 @@ void	pipex2(t_parsed *curr, char **envp)
 	if (pid == -1)
 		you_fucked_up("Fork error", 8);
 	path = get_path(curr->args[0], envp);
+
 	if (!pid)
 	{
 		close(pid_fd[0]);
-		dup2(pid_fd[1], 1);
+
+		if (curr->outfile != STDOUT_FILENO)
+		{
+			// Set output redirection
+			dup2(pid_fd[1], curr->outfile);
+			close(curr->outfile);
+		}
+
 		execve(path, curr->args, envp);
 		free(path);
 	}
 	else
 	{
 		close(pid_fd[1]);
-		dup2(pid_fd[0], 0);
+
+		if (curr->infile != STDIN_FILENO)
+		{
+			// Set input redirection
+			dup2(pid_fd[0], curr->infile);
+			close(curr->infile);
+		}
+
 		waitpid(pid, &g_status, WUNTRACED);
 		if (WIFEXITED(g_status) && WEXITSTATUS(g_status) == EXEC_ERROR)
 			ft_printf("Command not found: %s \n", curr->args[0]);
@@ -107,18 +122,39 @@ void	pipex2(t_parsed *curr, char **envp)
 }
 
 // only single commands
-int	execute(t_parsed *cmd, char **envp)
+int execute(t_parsed *cmd, char **envp)
 {
-	char	*path;
-	pid_t	pid;
-										  
-	if (check_builtins(cmd->args, envp)) // check for builtins first
-        return (1);
+	char *path;
+	pid_t pid;
+	int infile_fd;
+	int outfile_fd;
+
+	if (check_builtins(cmd->args, envp))
+		return 1;
+
 	path = get_path(cmd->args[0], envp);
 	pid = fork();
+
 	if (pid == 0)
 	{
-		// child process
+		// Child process
+		infile_fd = cmd->infile;
+		outfile_fd = cmd->outfile;
+
+		if (infile_fd != STDIN_FILENO)
+		{
+			// Set input redirection
+			dup2(infile_fd, STDIN_FILENO);
+			close(infile_fd);
+		}
+
+		if (outfile_fd != STDOUT_FILENO)
+		{
+			// Set output redirection
+			dup2(outfile_fd, STDOUT_FILENO);
+			close(outfile_fd);
+		}
+
 		if (execve(path, cmd->args, envp) == -1)
 		{
 			free(path);
@@ -127,18 +163,22 @@ int	execute(t_parsed *cmd, char **envp)
 		}
 	}
 	else if (pid < 0)
+	{
 		you_fucked_up("Fork failed", 127);
+	}
 	else
 	{
-		// parent process
+		// Parent process
 		g_status = 1;
 		waitpid(pid, &g_status, WUNTRACED);
 		if (WIFEXITED(g_status) && WEXITSTATUS(g_status) == EXEC_ERROR)
 			ft_printf("Command not found: %s \n", cmd->args[0]);
 	}
+
 	free(path);
-	return (g_status);
+	return g_status;
 }
+
 
 
 // Gets PATH environment variable and saves into path_env
