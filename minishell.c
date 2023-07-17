@@ -35,7 +35,7 @@ void shell_loop(void)
     while (1)
     {
         save_fd = dup(STDIN_FILENO); // Duplicate the original file descriptor
-        line = readline("> ");
+        line = readline("\033[30m\033[101;5;7m⛧minihell⛧\033[0m\033[31m>\033[0m ");
         if (line == NULL)
         {
             close(save_fd); // Close the duplicated file descriptor before breaking the loop
