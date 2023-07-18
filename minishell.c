@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/07/17 16:28:47 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/18 14:03:04 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void shell_loop(void)
     extern char **environ;
 	int save_fd;
 
-    g_status = 1;
+    g_status = 0;
     while (1)
     {
         save_fd = dup(STDIN_FILENO); // Duplicate the original file descriptor
@@ -158,7 +158,7 @@ int execute(t_parsed *cmd, char **envp)
 		if (execve(path, cmd->args, envp) == -1)
 		{
 			free(path);
-			g_status = 126;
+			g_status = 127;
 			exit(g_status);
 		}
 	}

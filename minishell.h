@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/14 18:06:48 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/18 13:58:52 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-#define EXEC_ERROR 126
+#define EXEC_ERROR 127
 #define WRITE_END 1
 #define READ_END 0
 
