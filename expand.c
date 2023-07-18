@@ -3,14 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: phelebra <phelebra@student.42.fr>          +#+  +:+       +#+        */
+/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 16:24:28 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/29 14:34:09 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/18 13:48:28 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+extern int	g_status;
+
 
 /* 
 	goes through string, when $ is hit outside of '' 
@@ -64,7 +67,7 @@ char	*expand_arg(char *str, int counter, char **envp)
 	if (strcmp(argname, "0") == 0)
 		arg = ft_strdup("⛧minihell⛧");
 	else if (strcmp(argname, "?") == 0)
-		arg = ft_strdup("1");
+		arg = ft_itoa(g_status % 255);
 	else
 		arg = get_arg(argname, envp);
 	newstr = ft_calloc((ft_strlen(str) - argname_len - 1)
