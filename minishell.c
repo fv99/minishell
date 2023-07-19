@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
+/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/07/18 14:03:04 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/19 13:52:58 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void shell_loop(void)
 	int save_fd;
 
     g_status = 0;
+	signal(SIGINT, sigint_handler);
     while (1)
     {
         save_fd = dup(STDIN_FILENO); // Duplicate the original file descriptor
@@ -57,6 +58,17 @@ void shell_loop(void)
     }
 }
 
+void	sigint_handler(int sig)
+{
+	if (sig == SIGINT)
+	{
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		printf("\n");
+        rl_redisplay();
+	}
+}
+
 void	execute_commands(t_parsed *head, char **envp)
 {
 	t_parsed *current;
@@ -70,7 +82,7 @@ void	execute_commands(t_parsed *head, char **envp)
 			pipex2(current, envp);
 		else
 			execute(current, envp);
-        free(current->args);  // Free the array of arguments
+		free(current->args);  // Free the array of arguments
         free(current);  // Free the node itself
         current = next;  // Move to the next node
 	}
@@ -78,47 +90,42 @@ void	execute_commands(t_parsed *head, char **envp)
 
 void pipex2(t_parsed *curr, char **envp)
 {
-	pid_t pid;
-	int pid_fd[2];
-	char *path;
+    pid_t pid;
+    int pid_fd[2];
+    char *path;
 
-	if (pipe(pid_fd) == -1)
-		you_fucked_up("Pipe error", 9);
-	pid = fork();
-	if (pid == -1)
-		you_fucked_up("Fork error", 8);
-	path = get_path(curr->args[0], envp);
-
-	if (!pid)
-	{
-		close(pid_fd[0]);
-
-		if (curr->outfile != STDOUT_FILENO)
-		{
-			// Set output redirection
-			dup2(pid_fd[1], curr->outfile);
-			close(curr->outfile);
-		}
-
-		execve(path, curr->args, envp);
-		free(path);
-	}
-	else
-	{
-		close(pid_fd[1]);
-
-		if (curr->infile != STDIN_FILENO)
-		{
-			// Set input redirection
-			dup2(pid_fd[0], curr->infile);
-			close(curr->infile);
-		}
-
-		waitpid(pid, &g_status, WUNTRACED);
-		if (WIFEXITED(g_status) && WEXITSTATUS(g_status) == EXEC_ERROR)
-			ft_printf("Command not found: %s \n", curr->args[0]);
-		free(path);
-	}
+    if (pipe(pid_fd) == -1)
+        you_fucked_up("Pipe error", 9);
+    pid = fork();
+    if (pid == -1)
+        you_fucked_up("Fork error", 8);
+    path = get_path(curr->args[0], envp);
+    if (!pid)
+    {
+        close(pid_fd[0]); // Close unused read end of the pipe
+        if (curr->outfile != STDOUT_FILENO)
+            dup2(curr->outfile, STDOUT_FILENO);
+        else
+            dup2(pid_fd[1], STDOUT_FILENO);
+        close(pid_fd[1]);
+        execve(path, curr->args, envp);
+        free(path);
+    }
+    else
+    {
+        close(pid_fd[1]); // Close unused write end of the pipe
+        if (curr->infile != STDIN_FILENO)
+        {
+            dup2(pid_fd[0], STDIN_FILENO);
+            close(pid_fd[0]);
+        }
+        else
+            dup2(pid_fd[0], STDIN_FILENO);
+        waitpid(pid, &g_status, WUNTRACED);
+        if (WIFEXITED(g_status) && WEXITSTATUS(g_status) == EXEC_ERROR)
+            ft_printf("Command not found: %s \n", curr->args[0]);
+        free(path);
+    }
 }
 
 // only single commands
@@ -128,9 +135,6 @@ int execute(t_parsed *cmd, char **envp)
 	pid_t pid;
 	int infile_fd;
 	int outfile_fd;
-
-	if (check_builtins(cmd->args, envp))
-		return 1;
 
 	path = get_path(cmd->args[0], envp);
 	pid = fork();
@@ -163,9 +167,7 @@ int execute(t_parsed *cmd, char **envp)
 		}
 	}
 	else if (pid < 0)
-	{
 		you_fucked_up("Fork failed", 127);
-	}
 	else
 	{
 		// Parent process
@@ -174,7 +176,6 @@ int execute(t_parsed *cmd, char **envp)
 		if (WIFEXITED(g_status) && WEXITSTATUS(g_status) == EXEC_ERROR)
 			ft_printf("Command not found: %s \n", cmd->args[0]);
 	}
-
 	free(path);
 	return g_status;
 }

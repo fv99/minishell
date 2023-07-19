@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:38:20 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/17 15:41:25 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/18 17:02:24 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,6 @@ t_parsed *fill_list(char **args)
             tail = add_new_node(cmds, curr, &head, &tail); // Adds a new node to linked list
             cmds = malloc(sizeof(char *) * ARG_SIZE); // Allocates new command array
             j = 0;
-            // if (curr == PIPE) // If found a pipe operation
-            //     tail->outfile = 3; // Pipe output to next command
             if (curr == RED_OUT || curr == RED_IN || curr == RED_APP || curr == HEREDOC)
                 update_current_operation(&curr, args, &i, tail); // Checks for operations and sets infiles
         }
