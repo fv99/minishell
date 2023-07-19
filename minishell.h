@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
+/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/18 13:58:52 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/19 13:52:41 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <stdbool.h>
 #include <sys/wait.h>
 #include <sys/fcntl.h>
+#include <signal.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -145,6 +146,8 @@ void	ft_free_matrix(char ***m);
 void    shell_loop(void);
 
 void	execute_commands(t_parsed *head, char **envp);
+
+void	sigint_handler(int sig);
 
 void	pipex2(t_parsed *curr, char **envp);
 
