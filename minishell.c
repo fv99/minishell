@@ -6,7 +6,7 @@
 /*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/07/19 13:52:58 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/20 11:30:54 by fvonsovs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void shell_loop(void)
     while (1)
     {
         save_fd = dup(STDIN_FILENO); // Duplicate the original file descriptor
-        line = readline("\033[30m\033[101;5;7m⛧minihell⛧\033[0m\033[31m>\033[0m ");
+        line = readline("\033[30m\033[101;5;7m⛧ minihell ⛧\033[0m\033[31m >\033[0m ");
         if (line == NULL)
         {
             close(save_fd); // Close the duplicated file descriptor before breaking the loop
@@ -82,7 +82,7 @@ void	execute_commands(t_parsed *head, char **envp)
 			pipex2(current, envp);
 		else
 			execute(current, envp);
-		free(current->args);  // Free the array of arguments
+        free(current->args);  // Free the array of arguments
         free(current);  // Free the node itself
         current = next;  // Move to the next node
 	}
@@ -98,8 +98,11 @@ void pipex2(t_parsed *curr, char **envp)
         you_fucked_up("Pipe error", 9);
     pid = fork();
     if (pid == -1)
-        you_fucked_up("Fork error", 8);
-    path = get_path(curr->args[0], envp);
+        you_fucked_up("Fork error", 8);	
+	else if (curr->args[0][0] == '/')
+		path = ft_strdup(curr->args[0]);
+	else
+    	path = get_path(curr->args[0], envp);
     if (!pid)
     {
         close(pid_fd[0]); // Close unused read end of the pipe
@@ -136,29 +139,27 @@ int execute(t_parsed *cmd, char **envp)
 	int infile_fd;
 	int outfile_fd;
 
-	path = get_path(cmd->args[0], envp);
+	if (check_builtins(cmd->args, envp))
+		return 1;
+	if (cmd->args[0][0] == '/')
+		path = ft_strdup(cmd->args[0]);
+	else
+		path = get_path(cmd->args[0], envp);
 	pid = fork();
-
 	if (pid == 0)
 	{
-		// Child process
 		infile_fd = cmd->infile;
 		outfile_fd = cmd->outfile;
-
 		if (infile_fd != STDIN_FILENO)
 		{
-			// Set input redirection
 			dup2(infile_fd, STDIN_FILENO);
 			close(infile_fd);
 		}
-
 		if (outfile_fd != STDOUT_FILENO)
 		{
-			// Set output redirection
 			dup2(outfile_fd, STDOUT_FILENO);
 			close(outfile_fd);
 		}
-
 		if (execve(path, cmd->args, envp) == -1)
 		{
 			free(path);
@@ -170,7 +171,6 @@ int execute(t_parsed *cmd, char **envp)
 		you_fucked_up("Fork failed", 127);
 	else
 	{
-		// Parent process
 		g_status = 1;
 		waitpid(pid, &g_status, WUNTRACED);
 		if (WIFEXITED(g_status) && WEXITSTATUS(g_status) == EXEC_ERROR)
@@ -179,8 +179,6 @@ int execute(t_parsed *cmd, char **envp)
 	free(path);
 	return g_status;
 }
-
-
 
 // Gets PATH environment variable and saves into path_env
 // Loops through each directory in path_env separated by PATH_SEP
