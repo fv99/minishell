@@ -3,14 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: x230 <x230@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 15:43:54 by x230              #+#    #+#             */
-/*   Updated: 2023/06/10 19:06:43 by x230             ###   ########.fr       */
+/*   Updated: 2023/07/21 15:55:03 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+extern char **environ; // External reference to the environment variables array
+
+int builtin_env()
+{
+	char **env_var = environ;
+
+	while (*env_var != NULL)
+	{
+		printf("%s\n", *env_var);
+		env_var++;
+	}
+	return (0);
+}
 
 // make it so it interprets "" as one argument
 int	builtin_echo(char **args)
@@ -97,3 +111,41 @@ int	builtin_export(char **args, char **envp)
 	}
 	return (0);
 } 
+
+/*int bulitin_export(char **args) {
+	// Duplicate the input string to avoid modifying the original
+	char *var_copy = strdup(args);
+	if (var_copy == NULL)
+	{
+		perror("Error duplicating variable");
+		return -1;
+			}
+
+	// Find the equals sign that separates the variable name and value
+	char *equals_sign = strchr(var_copy, '=');
+	if (equals_sign == NULL)
+	{
+		fprintf(stderr, "Invalid variable format: %s\n", args);
+		free(var_copy);
+		return -1;
+	}
+
+	// Split the string into variable name and value parts
+	*equals_sign = '\0';
+	char *var_name = var_copy;
+	char *var_value = equals_sign + 1;
+
+	// Set the environment variable using the putenv function
+	if (setenv(var_name, var_value, 1) != 0)
+	{
+		perror("Error setting environment variable");
+		free(var_copy);
+		return -1;
+} 
+
+	// Free the allocated memory
+	free(var_copy);
+
+	return 0;
+}
+*/

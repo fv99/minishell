@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_1.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 15:02:20 by x230              #+#    #+#             */
-/*   Updated: 2023/07/12 15:32:20 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/21 15:12:36 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ int	check_builtins(char **args, char **envp)
 		return(builtin_echo(args));
 	if (!ft_strcmp(args[0], "export"))
 		return(builtin_export(args, envp));
+	if (!ft_strcmp(args[0], "env"))
+		return(builtin_env());
 	return (0);
 }
 

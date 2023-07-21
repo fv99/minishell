@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/19 13:52:41 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/21 15:12:35 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,6 +194,8 @@ int		builtin_pwd(void);
 int		builtin_echo(char **args);
 
 int		builtin_export(char **args, char **envp);
+
+int		builtin_env();
 
 // pipex.c
 
