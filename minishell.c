@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/07/20 11:30:54 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/24 12:14:28 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@
 extern int	g_status;
 
 // main loop to run the shell
-void shell_loop(void)
+void shell_loop(char **environ2)
 {
     t_parsed *head;
     char *line;
     char **ebloid;
-    extern char **environ;
+    //extern char **environ;
 	int save_fd;
 
     g_status = 0;
@@ -46,10 +46,10 @@ void shell_loop(void)
 		{
             add_history(line);
 			// test_tokenize(line, environ);
-			ebloid = lexer(line, environ);
+			ebloid = lexer(line, environ2);
 			head = fill_list(ebloid);
 			// test_parser(head);
-			execute_commands(head, environ);
+			execute_commands(head, environ2);
 			free_array(ebloid);
 		}
 		free(line);

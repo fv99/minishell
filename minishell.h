@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/21 15:12:35 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/24 12:17:38 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void	ft_free_matrix(char ***m);
 
 // minishell.c
 
-void    shell_loop(void);
+void    shell_loop(char **environ2);
 
 void	execute_commands(t_parsed *head, char **envp);
 
@@ -195,7 +195,7 @@ int		builtin_echo(char **args);
 
 int		builtin_export(char **args, char **envp);
 
-int		builtin_env();
+int		builtin_env(char **envp);
 
 // pipex.c
 

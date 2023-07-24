@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 15:43:54 by x230              #+#    #+#             */
-/*   Updated: 2023/07/21 15:55:03 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/24 12:17:12 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,12 @@
 
 extern char **environ; // External reference to the environment variables array
 
-int builtin_env()
+int builtin_env(char **envp)
 {
-	char **env_var = environ;
-
-	while (*env_var != NULL)
+	while (*envp != NULL)
 	{
-		printf("%s\n", *env_var);
-		env_var++;
+		printf("%s\n", *envp);
+		envp++;
 	}
 	return (0);
 }
