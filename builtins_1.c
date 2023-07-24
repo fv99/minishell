@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 15:02:20 by x230              #+#    #+#             */
-/*   Updated: 2023/07/24 12:16:58 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/24 14:40:01 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,11 @@ int	check_builtins(char **args, char **envp)
 	if (!ft_strcmp(args[0], "echo"))
 		return(builtin_echo(args));
 	if (!ft_strcmp(args[0], "export"))
-		return(builtin_export(args, envp));
+		return(builtin_export(args, &envp));
 	if (!ft_strcmp(args[0], "env"))
-		return(builtin_env(envp));
+		return(builtin_env(&envp));
+	if (!ft_strcmp(args[0], "unset"))
+        return (builtin_unset(args, &envp));
 	return (0);
 }
 

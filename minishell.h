@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/24 12:17:38 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/24 14:37:55 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,9 +193,12 @@ int		builtin_pwd(void);
 
 int		builtin_echo(char **args);
 
-int		builtin_export(char **args, char **envp);
+int		builtin_export(char **args, char ***envp);
 
-int		builtin_env(char **envp);
+int		builtin_env(char ***envp);
+
+int		builtin_unset(char **args, char ***envp);
+
 
 // pipex.c
 

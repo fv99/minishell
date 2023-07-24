@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 15:43:54 by x230              #+#    #+#             */
-/*   Updated: 2023/07/24 12:17:12 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/24 14:42:47 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,15 @@
 
 extern char **environ; // External reference to the environment variables array
 
-int builtin_env(char **envp)
+int builtin_env(char ***envp)
 {
-	while (*envp != NULL)
+	char **env_ptr = *envp;
+	while (*env_ptr != NULL)
 	{
-		printf("%s\n", *envp);
-		envp++;
+		printf("%s\n", *env_ptr);
+		env_ptr++;
 	}
-	return (0);
+	return (1);
 }
 
 // make it so it interprets "" as one argument
@@ -51,99 +52,117 @@ int	builtin_echo(char **args)
 }
 
 // need to split under 25 lines
-// doesnt work right now
-int	builtin_export(char **args, char **envp)
-{
-	char	**env;
-	char	*key;
-	char	*val;
-	char	*equal;
-	char	*new_env;
-	int		i;
-	size_t	l;
+// export is able to add key and value into the array, but for some reason I dont know, after calling env again it is not stored there :D
+int builtin_export(char **args, char ***envp) {
+    printf("Content of **args array: ");
+    char **arg_ptr = args;
+    while (*arg_ptr != NULL) {
+        printf("%s ", *arg_ptr);
+        arg_ptr++;
+    }
+    printf("\n");
 
-	env = envp;
-	i = 0;
-	while (args[i] != NULL)
-	{
-		equal = ft_strchr(args[i], '='); // check if arg has format "KEY=VALUE"
-		if (equal != NULL)
-		{
-			*equal = '\0';		// split arg into key and value
-			key = args[i];
-			val = equal + 1;
+    char *key;
+    char *val;
+    char *equal;
+    char *new_env;
 
-			l = strlen(key) + strlen(val) + 2;
-			new_env = malloc(l);
-			if (new_env == NULL)
-            {
-                perror("export");
-                return (1);
-            }
-			ft_strcpy(new_env, key);
-			ft_strcat(new_env, "=");
-			ft_strcat(new_env, val);
+    equal = strchr(args[1], '='); // check if arg has format "KEY=VALUE"
+    if (equal != NULL) {
+        *equal = '\0'; // split arg into key and value
+        key = args[1];
+        val = equal + 1;
 
-			// update environment variable
-			if (putenv(new_env) != 0)
-			{
-				perror("export");
-				free(new_env);
-				return (-1);
-			}
-			else
-			{
-				while(*env != NULL)
-				{
-					if (ft_strncmp(*env, key, strlen(key)) == 0)
-					{
-						printf("%s\n", *env);
-						
-					}
-				}
+        size_t l = strlen(key) + strlen(val) + 2;
+        new_env = malloc(l);
+        if (new_env == NULL) {
+            perror("export");
+            return 1;
+        }
 
+        ft_strcpy(new_env, key);
+        ft_strcat(new_env, "=");
+        ft_strcat(new_env, val);
 
-			}
-			i++;
-		}
-	}
-	return (0);
-} 
+        // Find the number of environment variables in the envp array
+        int num_env_vars = 0;
+        while ((*envp)[num_env_vars] != NULL) {
+            num_env_vars++;
+        }
 
-/*int bulitin_export(char **args) {
-	// Duplicate the input string to avoid modifying the original
-	char *var_copy = strdup(args);
-	if (var_copy == NULL)
-	{
-		perror("Error duplicating variable");
-		return -1;
-			}
+        // Allocate memory for the updated envp array, including the new environment variable
+        char **updated_envp = malloc((num_env_vars + 2) * sizeof(char *));
+        if (updated_envp == NULL) {
+            perror("export");
+            free(new_env);
+            return 1;
+        }
 
-	// Find the equals sign that separates the variable name and value
-	char *equals_sign = strchr(var_copy, '=');
-	if (equals_sign == NULL)
-	{
-		fprintf(stderr, "Invalid variable format: %s\n", args);
-		free(var_copy);
-		return -1;
-	}
+        // Copy the existing environment variables to the updated envp array using pointer arithmetic
+        char **env_ptr = *envp;
+        char **updated_env_ptr = updated_envp;
+        while (*env_ptr != NULL) {
+            *updated_env_ptr = *env_ptr;
+            env_ptr++;
+            updated_env_ptr++;
+        }
 
-	// Split the string into variable name and value parts
-	*equals_sign = '\0';
-	char *var_name = var_copy;
-	char *var_value = equals_sign + 1;
+        // Add the new environment variable to the updated envp array
+        *updated_env_ptr = new_env;
+        *(updated_env_ptr + 1) = NULL;
 
-	// Set the environment variable using the putenv function
-	if (setenv(var_name, var_value, 1) != 0)
-	{
-		perror("Error setting environment variable");
-		free(var_copy);
-		return -1;
-} 
+        // Restore the original value of args[1]
+        *equal = '=';
 
-	// Free the allocated memory
-	free(var_copy);
+        // Update the envp pointer to point to the updated envp array
+        *envp = updated_envp;
+    }
 
-	return 0;
+    printf("Updated content of **envp array: ");
+    char **env_ptr = *envp;
+    while (*env_ptr != NULL) {
+        printf("%s ", *env_ptr);
+        env_ptr++;
+    }
+    printf("\n");
+
+    return 1;
 }
-*/
+
+// Helper function to remove an element from an array of strings
+void remove_element(char **array, int index) {
+    int i;
+    for (i = index; array[i] != NULL; i++) {
+        array[i] = array[i + 1];
+    }
+}
+
+int builtin_unset(char **args, char ***envp) {
+    if (args == NULL || args[1] == NULL) {
+        fprintf(stderr, "unset: Missing argument\n");
+        return 1;
+    }
+
+    if (*envp == NULL) {
+        fprintf(stderr, "Environment variables array is NULL\n");
+        return 1;
+    }
+
+    char **env_ptr = *envp;
+    int index = 0;
+    while (env_ptr[index] != NULL) {
+        char *equal = strchr(env_ptr[index], '=');
+        if (equal != NULL) {
+            *equal = '\0'; // Split key from value
+            if (strcmp(env_ptr[index], args[1]) == 0) {
+                //free(env_ptr[index]); // Free the key=value string
+                remove_element(env_ptr, index); // Remove the element from the array
+                break;
+            }
+            *equal = '='; // Restore the original string
+        }
+        index++;
+    }
+
+    return 1;
+}

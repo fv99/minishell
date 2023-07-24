@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:17:51 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/24 12:14:37 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/24 14:20:35 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,11 @@
 
 int	g_status;
 
-int	main(void)
-{
-	g_status = 1;
+int main(void) {
+    g_status = 1;
 
-	extern char **environ;
-	// Find the number of environment variables in the original environ array
+    extern char **environ;
+    // Find the number of environment variables in the original environ array
     int num_env_vars = 0;
     while (environ[num_env_vars] != NULL) {
         num_env_vars++;
@@ -61,13 +60,25 @@ int	main(void)
     // The cust_env array should be null-terminated
     cust_env[num_env_vars] = NULL;
 
+    printf("Before shell_loop - environ2 content:\n");
+    env_ptr = cust_env;
+    while (*env_ptr != NULL) {
+        printf("%s\n", *env_ptr);
+        env_ptr++;
+    }
 
+    shell_loop(cust_env);
 
-	shell_loop(cust_env);
+    printf("After shell_loop - environ2 content:\n");
+    env_ptr = cust_env;
+    while (*env_ptr != NULL) {
+        printf("%s\n", *env_ptr);
+        env_ptr++;
+    }
 
     // Don't forget to free the memory when you are done using the cust_env array and the env_buffer.
     free(env_buffer);
     free(cust_env);
 
-	return (g_status);
+    return (g_status);
 }
