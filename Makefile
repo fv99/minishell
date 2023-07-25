@@ -6,7 +6,7 @@
 #    By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/19 12:15:10 by fvonsovs          #+#    #+#              #
-#    Updated: 2023/07/12 15:33:22 by fvonsovs         ###   ########.fr        #
+#    Updated: 2023/07/21 14:16:41 by phelebra         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,8 +30,8 @@ CFLAGS		+=	-fsanitize=address -g
 LDFLAGS		+=	-fsanitize=address -g
 endif
 ifeq ($(UNAME_S),Darwin)
-CFLAGS		+=	-fsanitize=address -g
-LDFLAGS		+=	-lSystem -fsanitize=address -g
+CFLAGS		+=	-fsanitize=address -g -I/usr/local/opt/readline/include
+LDFLAGS		+=	-lSystem -fsanitize=address -g -L/usr/local/opt/readline/lib
 endif
 
 # Colors

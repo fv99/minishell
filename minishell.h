@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/19 13:52:41 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/07/25 10:24:38 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void	ft_free_matrix(char ***m);
 
 // minishell.c
 
-void    shell_loop(void);
+void    shell_loop(char **environ2);
 
 void	execute_commands(t_parsed *head, char **envp);
 
@@ -151,7 +151,7 @@ void	sigint_handler(int sig);
 
 void	pipex2(t_parsed *curr, char **envp);
 
-int		execute(t_parsed *cmd, char **envp);
+int		execute(t_parsed *cmd, char ***envp);
 
 char	*get_path(char *cmd, char **envp);
 
@@ -179,7 +179,7 @@ t_parsed	*get_infile2(t_parsed *node, char **args, int *i);
 
 // builtins_1.c
 
-int		check_builtins(char **args, char **envp);
+int		check_builtins(char **args, char ***envp);
 
 int		builtin_exit(void);
 
@@ -193,7 +193,12 @@ int		builtin_pwd(void);
 
 int		builtin_echo(char **args);
 
-int		builtin_export(char **args, char **envp);
+int		builtin_export(char **args, char ***envp, int num_env_vars);
+
+int		builtin_env(char ***envp);
+
+int		builtin_unset(char **args, char ***envp);
+
 
 // pipex.c
 
