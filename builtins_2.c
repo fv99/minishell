@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 15:43:54 by x230              #+#    #+#             */
-/*   Updated: 2023/07/24 14:42:47 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/25 14:26:53 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	builtin_echo(char **args)
 
 // need to split under 25 lines
 // export is able to add key and value into the array, but for some reason I dont know, after calling env again it is not stored there :D
-int builtin_export(char **args, char ***envp) {
+int builtin_export(char **args, char ***envp, int num_env_vars) {
     printf("Content of **args array: ");
     char **arg_ptr = args;
     while (*arg_ptr != NULL) {
@@ -63,60 +63,64 @@ int builtin_export(char **args, char ***envp) {
     printf("\n");
 
     char *key;
-    char *val;
     char *equal;
-    char *new_env;
+    char *arg_dup = strdup(args[1]); // Duplicate the argument to avoid modification
 
-    equal = strchr(args[1], '='); // check if arg has format "KEY=VALUE"
+    equal = strchr(arg_dup, '=');
     if (equal != NULL) {
         *equal = '\0'; // split arg into key and value
-        key = args[1];
-        val = equal + 1;
+        key = arg_dup;
 
-        size_t l = strlen(key) + strlen(val) + 2;
-        new_env = malloc(l);
-        if (new_env == NULL) {
-            perror("export");
-            return 1;
+        // Search for the key in the existing environment variables
+        int key_index = -1;
+        for (int i = 0; i < num_env_vars; i++) {
+            if (strncmp(key, (*envp)[i], strlen(key)) == 0 && (*envp)[i][strlen(key)] == '=') {
+                key_index = i;
+                break;
+            }
         }
 
-        ft_strcpy(new_env, key);
-        ft_strcat(new_env, "=");
-        ft_strcat(new_env, val);
+        // Update the existing environment variable or add a new one
+        if (key_index >= 0) {
+            // Update the existing environment variable
+            free((*envp)[key_index]); // Free the old value
+            (*envp)[key_index] = strdup(args[1]); // Duplicate the new value
+        } else {
+            // Add a new environment variable
+            // Allocate memory for the new environment variable (KEY=VALUE + NULL-terminator)
+            char *new_env_var = (char *)malloc((strlen(args[1]) + 2) * sizeof(char));
+            if (new_env_var == NULL) {
+                perror("export");
+                free(arg_dup);
+                return 1;
+            }
+            strcpy(new_env_var, args[1]);
 
-        // Find the number of environment variables in the envp array
-        int num_env_vars = 0;
-        while ((*envp)[num_env_vars] != NULL) {
-            num_env_vars++;
+            // Allocate memory for the updated envp array, including the new environment variable
+            char **updated_envp = (char **)malloc((num_env_vars + 2) * sizeof(char *));
+            if (updated_envp == NULL) {
+                perror("export");
+                free(new_env_var);
+                free(arg_dup);
+                return 1;
+            }
+
+            // Copy the existing environment variables to the updated_envp array
+            for (int i = 0; i < num_env_vars; i++) {
+                updated_envp[i] = strdup((*envp)[i]);
+            }
+
+            // Add the new environment variable to the end of the updated_envp array
+            updated_envp[num_env_vars] = new_env_var;
+            updated_envp[num_env_vars + 1] = NULL; // Null-terminate the updated array
+
+            // Free the old envp and update the envp pointer to the updated array
+            //free(*envp);
+            *envp = updated_envp;
         }
-
-        // Allocate memory for the updated envp array, including the new environment variable
-        char **updated_envp = malloc((num_env_vars + 2) * sizeof(char *));
-        if (updated_envp == NULL) {
-            perror("export");
-            free(new_env);
-            return 1;
-        }
-
-        // Copy the existing environment variables to the updated envp array using pointer arithmetic
-        char **env_ptr = *envp;
-        char **updated_env_ptr = updated_envp;
-        while (*env_ptr != NULL) {
-            *updated_env_ptr = *env_ptr;
-            env_ptr++;
-            updated_env_ptr++;
-        }
-
-        // Add the new environment variable to the updated envp array
-        *updated_env_ptr = new_env;
-        *(updated_env_ptr + 1) = NULL;
-
-        // Restore the original value of args[1]
-        *equal = '=';
-
-        // Update the envp pointer to point to the updated envp array
-        *envp = updated_envp;
     }
+
+    free(arg_dup); // Free the duplicated argument
 
     printf("Updated content of **envp array: ");
     char **env_ptr = *envp;
@@ -124,10 +128,12 @@ int builtin_export(char **args, char ***envp) {
         printf("%s ", *env_ptr);
         env_ptr++;
     }
+	printf("%d\n", num_env_vars);
     printf("\n");
 
     return 1;
 }
+
 
 // Helper function to remove an element from an array of strings
 void remove_element(char **array, int index) {

@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/07/24 14:34:44 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/25 10:29:34 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	execute_commands(t_parsed *head, char **envp)
 		if (current->op == PIPE)
 			pipex2(current, envp);
 		else
-			execute(current, envp);
+			execute(current, &envp);
         free(current->args);  // Free the array of arguments
         free(current);  // Free the node itself
         current = next;  // Move to the next node
@@ -132,7 +132,7 @@ void pipex2(t_parsed *curr, char **envp)
 }
 
 // only single commands
-int execute(t_parsed *cmd, char **envp)
+int execute(t_parsed *cmd, char ***envp)
 {
 	char *path;
 	pid_t pid;
@@ -144,7 +144,7 @@ int execute(t_parsed *cmd, char **envp)
 	if (cmd->args[0][0] == '/')
 		path = ft_strdup(cmd->args[0]);
 	else
-		path = get_path(cmd->args[0], envp);
+		path = get_path(cmd->args[0], *envp);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -160,7 +160,7 @@ int execute(t_parsed *cmd, char **envp)
 			dup2(outfile_fd, STDOUT_FILENO);
 			close(outfile_fd);
 		}
-		if (execve(path, cmd->args, envp) == -1)
+		if (execve(path, cmd->args, *envp) == -1)
 		{
 			free(path);
 			g_status = 127;

@@ -6,14 +6,14 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 15:02:20 by x230              #+#    #+#             */
-/*   Updated: 2023/07/24 14:40:01 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/25 14:26:07 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 // function that will check if a builtin is called
-int	check_builtins(char **args, char **envp)
+int	check_builtins(char **args, char ***envp)
 {
 	if (!ft_strcmp(args[0], "exit"))
 		return(builtin_exit());
@@ -24,11 +24,17 @@ int	check_builtins(char **args, char **envp)
 	if (!ft_strcmp(args[0], "echo"))
 		return(builtin_echo(args));
 	if (!ft_strcmp(args[0], "export"))
-		return(builtin_export(args, &envp));
+	{
+		int num_env_vars = 0;
+    	for (; (*envp)[num_env_vars] != NULL; num_env_vars++) {
+        // Empty loop body; we just need to find the number of environment variables.
+    }
+		return(builtin_export(args, envp, num_env_vars));
+	}
 	if (!ft_strcmp(args[0], "env"))
-		return(builtin_env(&envp));
+		return(builtin_env(envp));
 	if (!ft_strcmp(args[0], "unset"))
-        return (builtin_unset(args, &envp));
+        return (builtin_unset(args, envp));
 	return (0);
 }
 
