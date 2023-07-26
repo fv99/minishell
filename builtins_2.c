@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 15:43:54 by x230              #+#    #+#             */
-/*   Updated: 2023/07/26 16:24:55 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/26 16:41:06 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,6 @@ int	builtin_echo(char **args)
 	return (1);
 }
 
-// need to split under 25 lines
-// export is able to add key and value into the array, but for some reason I dont know, after calling env again it is not stored there :D
 int builtin_export(char **args, t_env **env)
 {
     if (args[1] == NULL) {
@@ -62,6 +60,20 @@ int builtin_export(char **args, t_env **env)
     // Extract key and value from args[1]
     char *key = strtok(args[1], "=");
     char *value = strtok(NULL, "=");
+
+    // Try to find the key in the linked list
+    t_env *temp = *env;
+    while (temp != NULL) {
+        if (strcmp(temp->key, key) == 0) {
+            // Found the key, update its value
+            free(temp->value);
+            temp->value = strdup(value);
+            return (1);
+        }
+        temp = temp->next;
+    }
+
+    // If we reached here, the key was not found in the list, so we add a new node
 
     // Create new node
     t_env *new_node = (t_env *)malloc(sizeof(t_env));
