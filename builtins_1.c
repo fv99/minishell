@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 15:02:20 by x230              #+#    #+#             */
-/*   Updated: 2023/07/25 14:26:07 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/26 10:22:46 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 // function that will check if a builtin is called
 int	check_builtins(char **args, char ***envp)
 {
+	int num_env_vars = 0;
+    	for (; (*envp)[num_env_vars] != NULL; num_env_vars++) {
+        // Empty loop body; we just need to find the number of environment variables.
+    }
 	if (!ft_strcmp(args[0], "exit"))
 		return(builtin_exit());
 	if (!ft_strcmp(args[0], "cd"))
@@ -25,11 +29,8 @@ int	check_builtins(char **args, char ***envp)
 		return(builtin_echo(args));
 	if (!ft_strcmp(args[0], "export"))
 	{
-		int num_env_vars = 0;
-    	for (; (*envp)[num_env_vars] != NULL; num_env_vars++) {
-        // Empty loop body; we just need to find the number of environment variables.
-    }
-		return(builtin_export(args, envp, num_env_vars));
+		
+		return(builtin_export(args, envp, &num_env_vars));
 	}
 	if (!ft_strcmp(args[0], "env"))
 		return(builtin_env(envp));

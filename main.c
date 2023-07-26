@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:17:51 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/24 14:20:35 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/26 10:12:11 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,16 @@ int main(void) {
     }
 
     // Copy content from the environ array to the cust_env array
-    char *ptr = env_buffer;
-    env_ptr = environ;
-    while (*env_ptr != NULL) {
-        int len = strlen(*env_ptr) + 1; // Include the null-terminator
-        memcpy(ptr, *env_ptr, len);
-        cust_env[env_ptr - environ] = ptr;
-        ptr += len;
-        env_ptr++;
-    }
+	env_ptr = environ;
+	while (*env_ptr != NULL) {
+    	cust_env[env_ptr - environ] = strdup(*env_ptr);
+    	if (cust_env[env_ptr - environ] == NULL) {
+        	perror("Memory allocation failed");
+        	return 1;
+    	}
+    	env_ptr++;
+	}
+
 
     // The cust_env array should be null-terminated
     cust_env[num_env_vars] = NULL;
@@ -78,6 +79,12 @@ int main(void) {
 
     // Don't forget to free the memory when you are done using the cust_env array and the env_buffer.
     free(env_buffer);
+
+	// Free the environment variables
+	for (int i = 0; i < num_env_vars; i++) {
+    	free(cust_env[i]);
+	}
+	// Free the cust_env array
     free(cust_env);
 
     return (g_status);

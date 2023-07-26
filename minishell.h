@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/25 10:24:38 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/26 10:21:36 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,7 @@ int		builtin_pwd(void);
 
 int		builtin_echo(char **args);
 
-int		builtin_export(char **args, char ***envp, int num_env_vars);
+int		builtin_export(char **args, char ***envp, int *num_env_vars);
 
 int		builtin_env(char ***envp);
 

@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 15:43:54 by x230              #+#    #+#             */
-/*   Updated: 2023/07/25 14:26:53 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/26 10:34:18 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	builtin_echo(char **args)
 
 // need to split under 25 lines
 // export is able to add key and value into the array, but for some reason I dont know, after calling env again it is not stored there :D
-int builtin_export(char **args, char ***envp, int num_env_vars) {
+int builtin_export(char **args, char ***envp, int *num_env_vars) {
     printf("Content of **args array: ");
     char **arg_ptr = args;
     while (*arg_ptr != NULL) {
@@ -73,7 +73,7 @@ int builtin_export(char **args, char ***envp, int num_env_vars) {
 
         // Search for the key in the existing environment variables
         int key_index = -1;
-        for (int i = 0; i < num_env_vars; i++) {
+        for (int i = 0; i < *num_env_vars; i++) {
             if (strncmp(key, (*envp)[i], strlen(key)) == 0 && (*envp)[i][strlen(key)] == '=') {
                 key_index = i;
                 break;
@@ -87,36 +87,19 @@ int builtin_export(char **args, char ***envp, int num_env_vars) {
             (*envp)[key_index] = strdup(args[1]); // Duplicate the new value
         } else {
             // Add a new environment variable
-            // Allocate memory for the new environment variable (KEY=VALUE + NULL-terminator)
-            char *new_env_var = (char *)malloc((strlen(args[1]) + 2) * sizeof(char));
-            if (new_env_var == NULL) {
+            (*num_env_vars)++;
+
+            // Resize the envp array
+            *envp = realloc(*envp, (*num_env_vars + 1) * sizeof(char *));
+            if (*envp == NULL) {
                 perror("export");
                 free(arg_dup);
                 return 1;
             }
-            strcpy(new_env_var, args[1]);
 
-            // Allocate memory for the updated envp array, including the new environment variable
-            char **updated_envp = (char **)malloc((num_env_vars + 2) * sizeof(char *));
-            if (updated_envp == NULL) {
-                perror("export");
-                free(new_env_var);
-                free(arg_dup);
-                return 1;
-            }
-
-            // Copy the existing environment variables to the updated_envp array
-            for (int i = 0; i < num_env_vars; i++) {
-                updated_envp[i] = strdup((*envp)[i]);
-            }
-
-            // Add the new environment variable to the end of the updated_envp array
-            updated_envp[num_env_vars] = new_env_var;
-            updated_envp[num_env_vars + 1] = NULL; // Null-terminate the updated array
-
-            // Free the old envp and update the envp pointer to the updated array
-            //free(*envp);
-            *envp = updated_envp;
+            // Add the new environment variable to the end of the envp array
+            (*envp)[*num_env_vars - 1] = strdup(args[1]);
+            (*envp)[*num_env_vars] = NULL; // Null-terminate the array
         }
     }
 
@@ -128,7 +111,7 @@ int builtin_export(char **args, char ***envp, int num_env_vars) {
         printf("%s ", *env_ptr);
         env_ptr++;
     }
-	printf("%d\n", num_env_vars);
+    printf("%d\n", *num_env_vars);
     printf("\n");
 
     return 1;
@@ -161,7 +144,7 @@ int builtin_unset(char **args, char ***envp) {
         if (equal != NULL) {
             *equal = '\0'; // Split key from value
             if (strcmp(env_ptr[index], args[1]) == 0) {
-                //free(env_ptr[index]); // Free the key=value string
+                free(env_ptr[index]); // Free the key=value string
                 remove_element(env_ptr, index); // Remove the element from the array
                 break;
             }
