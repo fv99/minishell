@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/26 16:20:52 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/27 10:36:13 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,7 @@ int		check_builtins(char **args, t_env *env);
 
 int		builtin_exit(void);
 
-int		builtin_cd(char **args);
+int		builtin_cd(char **args, t_env **env);
 
 char	*builtin_cd_expand_home(char **args, char *home_dir);
 
