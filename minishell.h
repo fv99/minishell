@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/25 10:24:38 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/27 11:05:49 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,14 @@
 	quotes - tracks if we are inside quotation, true/false
 	quote_c - stores type of quote (ascii value for ' or ") or 0
 */
+
+typedef struct s_env {
+    char *key;
+    char *value;
+    struct s_env *next;
+} t_env;
+
+
 typedef struct s_lexer
 {
 	int char_i;
@@ -143,15 +151,15 @@ void	ft_free_matrix(char ***m);
 
 // minishell.c
 
-void    shell_loop(char **environ2);
+void    shell_loop(t_env *env);
 
-void	execute_commands(t_parsed *head, char **envp);
+void	execute_commands(t_parsed *head, char **envp, t_env *env);
 
 void	sigint_handler(int sig);
 
 void	pipex2(t_parsed *curr, char **envp);
 
-int		execute(t_parsed *cmd, char ***envp);
+int		execute(t_parsed *cmd, char **envp, t_env *env);
 
 char	*get_path(char *cmd, char **envp);
 
@@ -179,7 +187,7 @@ t_parsed	*get_infile2(t_parsed *node, char **args, int *i);
 
 // builtins_1.c
 
-int		check_builtins(char **args, char ***envp);
+int		check_builtins(char **args, t_env *env);
 
 int		builtin_exit(void);
 
@@ -193,11 +201,11 @@ int		builtin_pwd(void);
 
 int		builtin_echo(char **args);
 
-int		builtin_export(char **args, char ***envp, int num_env_vars);
+int		builtin_export(char **args, t_env **env);
 
-int		builtin_env(char ***envp);
+int		builtin_env(t_env *env);
 
-int		builtin_unset(char **args, char ***envp);
+int		builtin_unset(char **args, t_env **env);
 
 
 // pipex.c
