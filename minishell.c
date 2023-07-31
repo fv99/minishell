@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/07/26 16:14:13 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/31 16:56:43 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ int execute(t_parsed *cmd, char **envp, t_env *env)
 	int infile_fd;
 	int outfile_fd;
 
-	if (check_builtins(cmd->args, env))
+	if (check_builtins(cmd, env))
 		return 1;
 	if (cmd->args[0][0] == '/')
 		path = ft_strdup(cmd->args[0]);

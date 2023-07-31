@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 15:43:54 by x230              #+#    #+#             */
-/*   Updated: 2023/07/26 16:41:06 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/31 17:12:50 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,47 @@
 
 extern char **environ; // External reference to the environment variables array
 
-int builtin_env(t_env *env)
+int builtin_env(t_parsed *parsed_cmd, t_env *env)
 {
 	t_env *temp = env;
+	
+	int save_stdout = dup(STDOUT_FILENO);
+	int outfile_fd = parsed_cmd->outfile;
+	if (outfile_fd != STDOUT_FILENO)
+	{
+		dup2(outfile_fd, STDOUT_FILENO);
+		close(outfile_fd);
+	}
+
     while (temp != NULL) {
         printf("%s=%s\n", temp->key, temp->value);
         temp = temp->next;
     }
+
+	// restore STDOUT
+	dup2(save_stdout, STDOUT_FILENO);
+	close(save_stdout);
+
 	return (1);
 }
 
 // make it so it interprets "" as one argument
-int	builtin_echo(char **args)
+int	builtin_echo(t_parsed *parsed_cmd)
 {
 	bool	n_opt;
 	int		i;
+	char	**args = parsed_cmd->args;
 
 	n_opt = false;
 	i = 1;
+
+	int save_stdout = dup(STDOUT_FILENO);
+	int outfile_fd = parsed_cmd->outfile;
+	if (outfile_fd != STDOUT_FILENO)
+	{
+		dup2(outfile_fd, STDOUT_FILENO);
+		close(outfile_fd);
+	}
 
 	if (args[i] != NULL && strcmp(args[i], "-n") == 0)
 	{	
@@ -47,6 +70,11 @@ int	builtin_echo(char **args)
 	}
 	if (!n_opt)
 		printf("\n");
+
+	// restore STDOUT
+	dup2(save_stdout, STDOUT_FILENO);
+	close(save_stdout);
+
 	return (1);
 }
 

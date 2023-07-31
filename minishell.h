@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/07/27 11:05:49 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/31 17:13:57 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,7 @@ t_parsed	*get_infile2(t_parsed *node, char **args, int *i);
 
 // builtins_1.c
 
-int		check_builtins(char **args, t_env *env);
+int		check_builtins(t_parsed *parsed_cmd, t_env *env);
 
 int		builtin_exit(void);
 
@@ -195,15 +195,15 @@ int		builtin_cd(char **args);
 
 char	*builtin_cd_expand_home(char **args, char *home_dir);
 
-int		builtin_pwd(void);
+int		builtin_pwd(t_parsed *parsed_cmd);
 
 // builtins_2.c
 
-int		builtin_echo(char **args);
+int		builtin_echo(t_parsed *parsed_cmd);
 
 int		builtin_export(char **args, t_env **env);
 
-int		builtin_env(t_env *env);
+int		builtin_env(t_parsed *parsed_cmd, t_env *env);
 
 int		builtin_unset(char **args, t_env **env);
 

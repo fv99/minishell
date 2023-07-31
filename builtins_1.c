@@ -6,29 +6,32 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 15:02:20 by x230              #+#    #+#             */
-/*   Updated: 2023/07/27 11:20:20 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/07/31 17:13:59 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 // function that will check if a builtin is called
-int	check_builtins(char **args, t_env *env)
+int	check_builtins(t_parsed *parsed_cmd, t_env *env)
 {
-	if (!ft_strcmp(args[0], "exit"))
-		return(builtin_exit());
+	char **args = parsed_cmd->args;
+
 	if (!ft_strcmp(args[0], "cd"))
 		return(builtin_cd(args));
-	if (!ft_strcmp(args[0], "pwd"))
-		return(builtin_pwd());
 	if (!ft_strcmp(args[0], "echo"))
-		return(builtin_echo(args));
+		return(builtin_echo(parsed_cmd));
 	if (!ft_strcmp(args[0], "export"))
 		return(builtin_export(args, &env));
 	if (!ft_strcmp(args[0], "env"))
-		return(builtin_env(env));
+		return(builtin_env(parsed_cmd, env));
 	if (!ft_strcmp(args[0], "unset"))
         return (builtin_unset(args, &env));
+	if (!ft_strcmp(args[0], "pwd"))
+		return(builtin_pwd(parsed_cmd));
+	if (!ft_strcmp(args[0], "exit"))
+		return(builtin_exit());
+	
 	return (0);
 }
 
@@ -104,9 +107,17 @@ char *builtin_cd_expand_home(char **args, char *home_dir)
 	return(expanded);
 }
 
-int	builtin_pwd(void)
+int	builtin_pwd(t_parsed *parsed_cmd)
 {
 	char dir[1024]; // make bigger if needed
+
+	int save_stdout = dup(STDOUT_FILENO);
+	int outfile_fd = parsed_cmd->outfile;
+	if (outfile_fd != STDOUT_FILENO)
+	{
+		dup2(outfile_fd, STDOUT_FILENO);
+		close(outfile_fd);
+	}
 
 	if (getcwd(dir, sizeof(dir)) == NULL)
 	{
@@ -114,5 +125,9 @@ int	builtin_pwd(void)
 		return (-1);
 	}
 	printf("%s\n", dir);
+
+	// restore STDOUT
+	dup2(save_stdout, STDOUT_FILENO);
+	close(save_stdout);
 	return (1);
-} 
+}
