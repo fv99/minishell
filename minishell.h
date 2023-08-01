@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/08/01 17:24:22 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/01 17:48:33 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ typedef struct s_parsed
 char		**lexer(char *s, char **envp);
 char		**tokenize(char *src, char *delims);
 int			count_words(char *s, char *delims, t_lexer *lex);
+void		skip_and_parse(char *s, char *delims, t_lexer *lex);
 char		**fill_array(char **ret, char *s, char *delims, t_lexer *lex);
 
 // lexer_2.c
