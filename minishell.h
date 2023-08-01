@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/08/01 16:09:14 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/01 17:24:22 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,16 +127,20 @@ int			ft_matrixlen(char **m);
 void		ft_free_matrix(char ***m);
 
 // minishell.c
+void		process_line(char *line, char **environ, t_env *env);
 void		shell_loop(t_env *env);
 void		execute_commands(t_parsed *head, char **envp, t_env *env);
 void		sigint_handler(int sig);
-void		pipex2(t_parsed *curr, char **envp);
 int			execute(t_parsed *cmd, char **envp, t_env *env);
-char		*get_path(char *cmd, char **envp);
-char		*get_path_token(char *cmd, char *path_env, int cmd_len);
 
 // execute.c
-void		*mini_perror(int err_type, char *param, int err);
+char		*get_executable_path(t_parsed *cmd, char **envp);
+void		handle_child_process(t_parsed *cmd, char **envp, char *path);
+void		handle_parent_process(pid_t pid, t_parsed *cmd);
+void		fork_and_exec(t_parsed *cmd, char **envp, char *path);
+int			execute(t_parsed *cmd, char **envp, t_env *env);
+
+// get.c
 char		*get_here_str(char *str[2], size_t len, char *limit, char *warn);
 int			get_here_doc(char *str[2], char *aux[2]);
 int			get_fd(int oldfd, char *path, int flags[2]);
@@ -159,9 +163,12 @@ int			builtin_unset(char **args, t_env **env);
 // pipex.c
 t_parsed	*get_infile1(t_parsed *node, char **args, int *i);
 t_parsed	*get_infile2(t_parsed *node, char **args, int *i);
+void		pipex2(t_parsed *curr, char **envp);
+void		parent_process(t_parsed *curr, pid_t pid, int *pid_fd, char *path);
+void		child_process(t_parsed *curr, char **envp, int *pid_fd, char *path);
 
-// test_functions.c
-void		test_tokenize(char *input, char **envp);
-void		test_parser(t_parsed *head);
+//path.c
+char		*get_path(char *cmd, char **envp);
+char		*get_path_token(char *cmd, char *path_env, int cmd_len);
 
 #endif

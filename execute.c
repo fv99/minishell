@@ -5,131 +5,89 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/10 13:58:52 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/08/01 16:09:21 by phelebra         ###   ########.fr       */
+/*   Created: 2023/08/01 17:16:13 by phelebra          #+#    #+#             */
+/*   Updated: 2023/08/01 17:22:02 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+#define LINE_SIZE 1024
+#define PATH_SEP ":"
+
 extern int	g_status;
 
-char	*get_here_str(char *str[2], size_t len, char *limit, char *warn)
+char	*get_executable_path(t_parsed *cmd, char **envp)
 {
-	char	*temp;
+	char	*path;
 
-	while (g_status != 130 && (!str[0] || ft_strncmp(str[0], limit, len) \
-		|| (size_t)ft_strlen(limit) != len))
-	{
-		temp = str[1];
-		str[1] = ft_strjoin(str[1], str[0]);
-		free(temp);
-		free(str[0]);
-		str[0] = readline("HERE_DOC > ");
-		if (!str[0])
-		{
-			printf("%s (wanted `%s\')\n", warn, limit);
-			break ;
-		}
-		temp = str[0];
-		str[0] = ft_strjoin(str[0], "\n");
-		free(temp);
-		len = ft_strlen(str[0]) - 1;
-	}
-	free(str[0]);
-	return (str[1]);
-}
-
-int	get_here_doc(char *str[2], char *aux[2])
-{
-	int		fd[2];
-
-	g_status = 0;
-	if (pipe(fd) == -1)
-		you_fucked_up("pipe error", 1);
-	str[1] = get_here_str(str, 0, aux[0], aux[1]);
-	write(fd[WRITE_END], str[1], ft_strlen(str[1]));
-	free(str[1]);
-	close(fd[WRITE_END]);
-	if (g_status == 130)
-	{
-		close(fd[READ_END]);
-		return (-1);
-	}
-	return (fd[READ_END]);
-}
-
-int	get_fd(int oldfd, char *path, int flags[2])
-{
-	int	fd;
-
-	if (oldfd > 2)
-		close(oldfd);
-	if (!path)
-		return (-1);
-	if (access(path, F_OK) == -1 && !flags[0])
-		you_fucked_up("No such file or directory", 127);
-	else if (!flags[0] && access(path, R_OK) == -1)
-		you_fucked_up("Permission denied", 126);
-	else if (flags[0] && access(path, W_OK) == -1 && access(path, F_OK) == 0)
-		you_fucked_up("Permission denied", 126);
-	if (flags[0] && flags[1])
-		fd = open(path, O_CREAT | O_WRONLY | O_APPEND, 0666);
-	else if (flags[0] && !flags[1])
-		fd = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0666);
-	else if (!flags[0] && oldfd != -1)
-		fd = open(path, O_RDONLY);
+	if (cmd->args[0][0] == '/')
+		path = ft_strdup(cmd->args[0]);
 	else
-		fd = oldfd;
-	return (fd);
+		path = get_path(cmd->args[0], envp);
+	return (path);
 }
 
-t_parsed	*get_outfile1(t_parsed *node, char **args, int *i)
+void	handle_child_process(t_parsed *cmd, char **envp, char *path)
 {
-	char	*nl;
-	int		flags[2];
+	int		infile_fd;
+	int		outfile_fd;
 
-	flags[0] = 1;
-	flags[1] = 0;
-	nl = "syntax error near unexpected token `newline'";
-	(*i)++;
-	if (args[*i])
-		node->outfile = get_fd(node->outfile, args[*i], flags);
-	if (!args[*i] || node->outfile == -1)
+	infile_fd = cmd->infile;
+	outfile_fd = cmd->outfile;
+	if (infile_fd != STDIN_FILENO)
 	{
-		*i = -1;
-		if (node->outfile != -1)
-		{
-			ft_putendl_fd(nl, 2);
-			g_status = 2;
-		}
-		else
-			g_status = 1;
+		dup2(infile_fd, STDIN_FILENO);
+		close(infile_fd);
 	}
-	return (node);
+	if (outfile_fd != STDOUT_FILENO)
+	{
+		dup2(outfile_fd, STDOUT_FILENO);
+		close(outfile_fd);
+	}
+	if (execve(path, cmd->args, envp) == -1)
+	{
+		free(path);
+		g_status = 127;
+		exit(g_status);
+	}
 }
 
-t_parsed	*get_outfile2(t_parsed *node, char **args, int *i)
+void	handle_parent_process(pid_t pid, t_parsed *cmd)
 {
-	char	*nl;
-	int		flags[2];
+	g_status = 1;
+	waitpid(pid, &g_status, WUNTRACED);
+	if (WIFEXITED(g_status) && WEXITSTATUS(g_status) == EXEC_ERROR)
+		ft_printf("Command not found: %s \n", cmd->args[0]);
+}
 
-	flags[0] = 1;
-	flags[1] = 1;
-	nl = "minishell: syntax error near unexpected token `newline'";
-	(*i)++;
-	if (args[++(*i)])
-		node->outfile = get_fd(node->outfile, args[*i], flags);
-	if (!args[*i] || node->outfile == -1)
+void	fork_and_exec(t_parsed *cmd, char **envp, char *path)
+{
+	pid_t	pid;
+
+	pid = fork();
+	if (pid == 0)
 	{
-		*i = -1;
-		if (node->outfile != -1)
-		{
-			ft_putendl_fd(nl, 2);
-			g_status = 2;
-		}
-		else
-			g_status = 1;
+		handle_child_process(cmd, envp, path);
 	}
-	return (node);
+	else if (pid < 0)
+	{
+		you_fucked_up("Fork failed", 127);
+	}
+	else
+	{
+		handle_parent_process(pid, cmd);
+	}
+}
+
+int	execute(t_parsed *cmd, char **envp, t_env *env)
+{
+	char	*path;
+
+	if (check_builtins(cmd, env))
+		return (1);
+	path = get_executable_path(cmd, envp);
+	fork_and_exec(cmd, envp, path);
+	free(path);
+	return (g_status);
 }
