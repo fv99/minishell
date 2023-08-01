@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_3.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 13:14:37 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/21 13:17:47 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/08/01 14:55:13 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ char	**ft_matrix_replace_in(char ***big, char **small, int n)
 	*big = aux;
 	return (*big);
 }
-
 
 int	ft_matrixlen(char **m)
 {
