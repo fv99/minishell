@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/08/02 11:15:02 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/02 14:03:44 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,10 +162,28 @@ int			get_fd(int oldfd, char *path, int flags[2]);
 t_parsed	*get_outfile1(t_parsed *node, char **args, int *i);
 t_parsed	*get_outfile2(t_parsed *node, char **args, int *i);
 
+// builtin_cd.c
+void		handle_cd_home(const char *home_dir, char *cwd);
+void		handle_cd_oldpwd(const char *oldpwd, char *cwd);
+void		handle_cd_cmd(char *cmd, char *cwd);
+char		*prepare_cd_cmd_and_cwd(char **args,
+				const char *home_dir, char **cwd);
+int			builtin_cd(char **args);
+
+// builtin_export.c
+t_env		*create_env_node(char *key, char *value);
+t_env		*find_env_key(t_env *env, char *key);
+void		add_env_node(t_env **env, t_env *new_node);
+int			builtin_export(char **args, t_env **env);
+
+// builtin_echo.c
+void		handle_outfile_redirection(t_parsed *parsed_cmd);
+void		print_arguments(char **args, int start, bool n_opt);
+int			builtin_echo(t_parsed *parsed_cmd);
+
 // builtins_1.c
 int			check_builtins(t_parsed *parsed_cmd, t_env *env);
 int			builtin_exit(void);
-int			builtin_cd(char **args);
 char		*builtin_cd_expand_home(char **args, char *home_dir);
 int			builtin_pwd(t_parsed *parsed_cmd);
 

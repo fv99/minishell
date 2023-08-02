@@ -6,164 +6,60 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 15:43:54 by x230              #+#    #+#             */
-/*   Updated: 2023/07/31 17:12:50 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/02 14:08:14 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern char **environ; // External reference to the environment variables array
+extern char	**environ;
 
-int builtin_env(t_parsed *parsed_cmd, t_env *env)
+int	builtin_env(t_parsed *parsed_cmd, t_env *env)
 {
-	t_env *temp = env;
-	
-	int save_stdout = dup(STDOUT_FILENO);
-	int outfile_fd = parsed_cmd->outfile;
+	t_env	*temp;
+	int		save_stdout;
+	int		outfile_fd;
+
+	temp = env;
+	save_stdout = dup(STDOUT_FILENO);
+	outfile_fd = parsed_cmd->outfile;
 	if (outfile_fd != STDOUT_FILENO)
 	{
 		dup2(outfile_fd, STDOUT_FILENO);
 		close(outfile_fd);
 	}
-
-    while (temp != NULL) {
-        printf("%s=%s\n", temp->key, temp->value);
-        temp = temp->next;
-    }
-
-	// restore STDOUT
+	while (temp != NULL)
+	{
+		printf("%s=%s\n", temp->key, temp->value);
+		temp = temp->next;
+	}
 	dup2(save_stdout, STDOUT_FILENO);
 	close(save_stdout);
-
 	return (1);
 }
 
-// make it so it interprets "" as one argument
-int	builtin_echo(t_parsed *parsed_cmd)
+int	builtin_unset(char **args, t_env **env)
 {
-	bool	n_opt;
-	int		i;
-	char	**args = parsed_cmd->args;
+	t_env	*current;
+	t_env	*temp;
+	char	*key;
 
-	n_opt = false;
-	i = 1;
-
-	int save_stdout = dup(STDOUT_FILENO);
-	int outfile_fd = parsed_cmd->outfile;
-	if (outfile_fd != STDOUT_FILENO)
+	if (args[1] == NULL)
 	{
-		dup2(outfile_fd, STDOUT_FILENO);
-		close(outfile_fd);
+		fprintf(stderr, "unset: not enough arguments\n");
+		return (1);
 	}
-
-	if (args[i] != NULL && strcmp(args[i], "-n") == 0)
-	{	
-		n_opt = true;
-		i++;
-	}
-	while (args[i] != NULL)
+	key = args[1];
+	current = *env;
+	while (current != NULL && current->next != NULL)
 	{
-		printf("%s", args[i]);
-		if (args[i + 1] != NULL)
-            printf(" ");
-		i++;
+		if (strcmp(current->next->key, key) == 0)
+		{
+			temp = current->next;
+			current->next = current->next->next;
+			return (free(temp->key), free(temp->value), free(temp), 1);
+		}
+		current = current->next;
 	}
-	if (!n_opt)
-		printf("\n");
-
-	// restore STDOUT
-	dup2(save_stdout, STDOUT_FILENO);
-	close(save_stdout);
-
-	return (1);
-}
-
-int builtin_export(char **args, t_env **env)
-{
-    if (args[1] == NULL) {
-        fprintf(stderr, "export: expected argument\n");
-        return (1);
-    }
-
-    // Extract key and value from args[1]
-    char *key = strtok(args[1], "=");
-    char *value = strtok(NULL, "=");
-
-    // Try to find the key in the linked list
-    t_env *temp = *env;
-    while (temp != NULL) {
-        if (strcmp(temp->key, key) == 0) {
-            // Found the key, update its value
-            free(temp->value);
-            temp->value = strdup(value);
-            return (1);
-        }
-        temp = temp->next;
-    }
-
-    // If we reached here, the key was not found in the list, so we add a new node
-
-    // Create new node
-    t_env *new_node = (t_env *)malloc(sizeof(t_env));
-    if (new_node == NULL) {
-        fprintf(stderr, "export: allocation error\n");
-        return (1);
-    }
-
-    new_node->key = strdup(key);
-    new_node->value = strdup(value);
-    new_node->next = NULL;
-
-    // Add new node to the end of the list
-    if (*env == NULL) {
-        // The list is empty
-        *env = new_node;
-    } else {
-        // Find the last node
-        t_env *last = *env;
-        while (last->next != NULL) {
-            last = last->next;
-        }
-
-        // Add the new node to the end of the list
-        last->next = new_node;
-    }
-    return (1);
-}
-
-int builtin_unset(char **args, t_env **env)
-{
-    if (args[1] == NULL) {
-        fprintf(stderr, "unset: expected argument\n");
-        return (1);
-    }
-
-    char *key = args[1];
-
-    // Special case: deleting the first node
-    if (*env != NULL && strcmp((*env)->key, key) == 0) {
-        t_env *temp = *env;
-        *env = (*env)->next;
-        free(temp->key);
-        free(temp->value);
-        free(temp);
-        return (1);
-    }
-
-    // General case: deleting a node other than the first
-    t_env *current = *env;
-    while (current != NULL && current->next != NULL) {
-        if (strcmp(current->next->key, key) == 0) {
-            t_env *temp = current->next;
-            current->next = current->next->next;
-            free(temp->key);
-            free(temp->value);
-            free(temp);
-            return (1);
-        }
-        current = current->next;
-    }
-
-    fprintf(stderr, "unset: variable not found\n");
-    return (0);
+	return (0);
 }
