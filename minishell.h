@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/08/01 17:48:33 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/02 11:15:02 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,14 @@
 # define WRITE_END 1
 # define READ_END 0
 
-// structs go here
+typedef struct s_arg
+{
+	char	*argname;
+	int		argname_len;
+}	t_arg;
 
-/*
-	char_i - counter to iterate input string
-	word_n - used to count words in input string, in fill_array as start index
-	token_n - used in ft_fill_array, counter of processed tokens
-
-	quotes - tracks if we are inside quotation, true/false
-	quote_c - stores type of quote (ascii value for ' or ") or 0
-*/
-
-typedef struct s_env {
+typedef struct s_env
+{
 	char			*key;
 	char			*value;
 	struct s_env	*next;
@@ -83,6 +79,16 @@ typedef struct s_parsed
 	struct s_parsed	*next;
 }	t_parsed;
 
+typedef struct s_fill_list_vars
+{
+	char		**cmds;
+	t_parsed	*head;
+	t_parsed	*tail;
+	t_ops		curr;
+	int			i;
+	int			j;
+}	t_fill_list_vars;
+
 // lexer_1.c
 char		**lexer(char *s, char **envp);
 char		**tokenize(char *src, char *delims);
@@ -97,17 +103,25 @@ char		**fill_array_opts(char **ret, char *s, char *delims, t_lexer *lex);
 
 // expand.c 
 char		*expand_args(char **str_ptr, char **envp);
+t_arg		get_argname_and_len(char *str, int counter);
+char		*determine_arg_and_create_str(char *str, int counter,
+				t_arg arg_data, char **envp);
 char		*expand_arg(char *str, int counter, char **envp);
 char		*get_arg(char *argname, char **envp);
 
-// parser.c
+// fill_list.c
+void		init_fill_list_vars(t_fill_list_vars *fl_vars);
+t_parsed	*add_last_command_if_not_empty(t_fill_list_vars *fl_vars);
+void		add_node_and_update_current_operation(t_fill_list_vars *fl_vars,
+				char **args);
 t_parsed	*fill_list(char **args);
+
+// parser.c
 void		update_current_operation(t_ops *curr, char **args, int *i,
 				t_parsed *node);
 t_parsed	*add_new_node(char **cmds, t_ops curr,
 				t_parsed **head, t_parsed **tail);
 t_parsed	*new_parser_node(char **args, t_ops op);
-t_parsed	*add_null_node(t_parsed **head, t_parsed **tail);
 t_ops		check_op(char *str);
 
 // utils_1.c
