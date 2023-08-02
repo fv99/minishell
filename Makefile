@@ -6,7 +6,7 @@
 #    By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/19 12:15:10 by fvonsovs          #+#    #+#              #
-#    Updated: 2023/07/26 15:29:28 by phelebra         ###   ########.fr        #
+#    Updated: 2023/08/02 14:03:57 by phelebra         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,8 @@ UNAME_S 	=	$(shell uname -s)
 NAME		=	minishell
 SRCS		=	main.c minishell.c utils_1.c utils_2.c utils_3.c \
 				builtins_1.c builtins_2.c lexer_1.c lexer_2.c parser.c expand.c \
-				execute.c test_functions.c
+				execute.c pipex.c path.c get.c fill_list.c builtin_cd.c \
+				builtin_export.c builtin_echo.c
 OBJS		=	${SRCS:.c=.o}
 LIBC		=	ar -cq
 RM			=	rm -f

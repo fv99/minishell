@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fvonsovs <fvonsovs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 12:36:59 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/06/21 13:38:16 by fvonsovs         ###   ########.fr       */
+/*   Updated: 2023/08/01 17:33:27 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 	following functions called in lexer()
 	they tokenize <|> which is later joined with the rest of the args
  */
-char **tokenize_opts(char *src, char *delims)
+char	**tokenize_opts(char *src, char *delims)
 {
 	t_lexer	lex;
 	char	**ret;
@@ -41,23 +41,26 @@ char **tokenize_opts(char *src, char *delims)
 }
 
 /* 
-	modified count_words, increases the word count (word_n) at the start of each loop, 
-	regardless of whether the character at the current position (char_i) is a delimiter
+	modified count_words, increases the word count (word_n) 
+	at the start of each loop, regardless of whether the 
+	character at the current position (char_i) is a delimiter
  */
 int	count_words_opts(char *s, char *delims, t_lexer *lex)
 {
 	lex->quotes = 0;
 	lex->quote_c = 0;
-
 	while (s[lex->char_i] != '\0')
 	{
 		lex->word_n++;
 		if (!ft_strchr(delims, s[lex->char_i]))
 		{
-			while ((!ft_strchr(delims, s[lex->char_i]) || lex->quotes || lex->quote_c) && s[lex->char_i] != '\0')
+			while ((!ft_strchr(delims, s[lex->char_i]) || lex->quotes
+					|| lex->quote_c) && s[lex->char_i] != '\0')
 			{
-				lex->quotes = (lex->quotes + (!lex->quote_c && s[lex->char_i] == '\'')) % 2;
-				lex->quote_c = (lex->quote_c + (!lex->quotes && s[lex->char_i] == '\"')) % 2;
+				lex->quotes = (lex->quotes + (!lex->quote_c
+							&& s[lex->char_i] == '\'')) % 2;
+				lex->quote_c = (lex->quote_c + (!lex->quotes
+							&& s[lex->char_i] == '\"')) % 2;
 				lex->char_i++;
 			}
 			if (lex->quotes || lex->quote_c)
@@ -75,22 +78,25 @@ char	**fill_array_opts(char **ret, char *s, char *delims, t_lexer *lex)
 	lex->quotes = 0;
 	lex->quote_c = 0;
 	lex->char_i = 0;
-
 	while (s[lex->char_i] != '\0')
 	{
 		lex->word_n = lex->char_i;
 		if (!ft_strchr(delims, s[lex->char_i]))
 		{
-			while ((!ft_strchr(delims, s[lex->char_i]) || lex->quotes || lex->quote_c) && s[lex->char_i])
+			while ((!ft_strchr(delims, s[lex->char_i])
+					|| lex->quotes || lex->quote_c) && s[lex->char_i])
 			{
-				lex->quotes = (lex->quotes + (!lex->quote_c && s[lex->char_i] == '\'')) % 2;
-				lex->quote_c = (lex->quote_c + (!lex->quotes && s[lex->char_i] == '\"')) % 2;
+				lex->quotes = (lex->quotes + (!lex->quote_c
+							&& s[lex->char_i] == '\'')) % 2;
+				lex->quote_c = (lex->quote_c + (!lex->quotes
+							&& s[lex->char_i] == '\"')) % 2;
 				lex->char_i++;
 			}
 		}
 		else
 			lex->char_i++;
-		ret[lex->token_n++] = ft_substr(s, lex->word_n, lex->char_i - lex->word_n);
+		ret[lex->token_n++] = ft_substr(s, lex->word_n,
+				lex->char_i - lex->word_n);
 	}
 	return (ret);
 }
