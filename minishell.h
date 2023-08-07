@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/08/07 09:16:53 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/07 11:03:00 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,7 +196,7 @@ int			builtin_unset(char **args, t_env **env);
 // pipex.c
 t_parsed	*get_infile1(t_parsed *node, char **args, int *i);
 t_parsed	*get_infile2(t_parsed *node, char **args, int *i);
-void		pipex2(t_parsed *curr, char **envp);
+void		pipex2(t_parsed *curr, char **envp, t_env *env);
 void		parent_process(t_parsed *curr, pid_t pid, int *pid_fd, char *path);
 void		child_process(t_parsed *curr, char **envp, int *pid_fd, char *path);
 

@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/08/01 17:16:31 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/07 11:02:42 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	execute_commands(t_parsed *head, char **envp, t_env *env)
 	{
 		next = current->next;
 		if (current->op == PIPE)
-			pipex2(current, envp);
+			pipex2(current, envp, env);
 		else
 			execute(current, envp, env);
 		free(current->args);
