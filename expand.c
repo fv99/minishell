@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 16:24:28 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/08/02 09:46:21 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/07 13:51:02 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ extern int	g_status;
 	calls expand_arg to replace variable with its name
 	updates the str_ptr pointer
 */
-char	*expand_args(char **str_ptr, char **envp)
+char	*expand_args(char **str_ptr, t_env *env)
 {
 	int		i;
 	int		is_quotes;
@@ -41,7 +41,7 @@ char	*expand_args(char **str_ptr, char **envp)
 				is_quotes = 0;
 		}
 		else if (str[i] == '$' && is_quotes != 1)
-			str = expand_arg (str, i--, envp);
+			str = expand_arg (str, i--, env);
 	}
 	*str_ptr = str;
 	return (str);
@@ -64,7 +64,7 @@ t_arg	get_argname_and_len(char *str, int counter)
 }
 
 char	*determine_arg_and_create_str(char *str, int counter,
-	t_arg arg_data, char **envp)
+	t_arg arg_data, t_env *env)
 {
 	char	*arg;
 	char	*newstr;
@@ -74,7 +74,7 @@ char	*determine_arg_and_create_str(char *str, int counter,
 	else if (strcmp(arg_data.argname, "?") == 0)
 		arg = ft_itoa(g_status % 255);
 	else
-		arg = get_arg(arg_data.argname, envp);
+		arg = get_arg(arg_data.argname, env);
 	newstr = ft_calloc((ft_strlen(str) - arg_data.argname_len - 1)
 			+ ft_strlen(arg) + 1, sizeof(char));
 	ft_strlcpy(newstr, str, counter + 1);
@@ -89,13 +89,13 @@ char	*determine_arg_and_create_str(char *str, int counter,
 	return (newstr);
 }
 
-char	*expand_arg(char *str, int counter, char **envp)
+char	*expand_arg(char *str, int counter, t_env *env)
 {
 	t_arg	arg_data;
 	char	*newstr;
 
 	arg_data = get_argname_and_len(str, counter);
-	newstr = determine_arg_and_create_str(str, counter, arg_data, envp);
+	newstr = determine_arg_and_create_str(str, counter, arg_data, env);
 	free(arg_data.argname);
 	free(str);
 	return (newstr);
@@ -104,22 +104,13 @@ char	*expand_arg(char *str, int counter, char **envp)
 /* 
 	returns value of variable name from environ
 */
-char	*get_arg(char *argname, char **envp)
+char *get_arg(char *argname, t_env *env)
 {
-	int	i;
-	int	argname_len;
-	int	env_len;
-
-	argname_len = strlen(argname);
-	i = 0;
-	while (envp[i])
+	while (env != NULL)
 	{
-		env_len = strlen(envp[i]);
-		if (env_len >= argname_len && envp[i][argname_len] == '=' &&
-			strncmp(envp[i], argname, argname_len) == 0)
-			return (&envp[i][argname_len + 1]);
-		i++;
+		if (strcmp(env->key, argname) == 0)
+			return env->value;
+		env = env->next;
 	}
-	argname = "";
-	return (argname);
+	return "";
 }

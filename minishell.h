@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/08/07 11:03:00 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/07 13:55:14 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ typedef struct s_fill_list_vars
 }	t_fill_list_vars;
 
 // lexer_1.c
-char		**lexer(char *s, char **envp);
+char		**lexer(char *s, t_env *env);
 char		**tokenize(char *src, char *delims);
 int			count_words(char *s, char *delims, t_lexer *lex);
 void		skip_and_parse(char *s, char *delims, t_lexer *lex);
@@ -102,12 +102,12 @@ int			count_words_opts(char *s, char *delims, t_lexer *lex);
 char		**fill_array_opts(char **ret, char *s, char *delims, t_lexer *lex);
 
 // expand.c 
-char		*expand_args(char **str_ptr, char **envp);
+char		*expand_args(char **str_ptr, t_env *env);
 t_arg		get_argname_and_len(char *str, int counter);
 char		*determine_arg_and_create_str(char *str, int counter,
-				t_arg arg_data, char **envp);
-char		*expand_arg(char *str, int counter, char **envp);
-char		*get_arg(char *argname, char **envp);
+				t_arg arg_data, t_env *env);
+char		*expand_arg(char *str, int counter, t_env *env);
+char		*get_arg(char *argname, t_env *env);
 
 // fill_list.c
 void		init_fill_list_vars(t_fill_list_vars *fl_vars);

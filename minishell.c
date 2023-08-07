@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/08/07 12:37:24 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/07 13:55:11 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	process_line(char *line, char **environ, t_env *env)
 	t_parsed	*head;
 
 	add_history(line);
-	ebloid = lexer(line, environ);
+	ebloid = lexer(line, env);
 	if (ebloid != NULL)
 	{
 		head = fill_list(ebloid);
