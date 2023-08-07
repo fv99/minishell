@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 16:43:48 by phelebra          #+#    #+#             */
-/*   Updated: 2023/08/07 09:21:15 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/07 15:52:36 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ extern int	g_status;
 // Loops through each directory in path_env separated by PATH_SEP
 // Uses get_path_token function to get full path, returns it
 
-char *get_path(char *cmd, t_env *env)
+char	*get_path(char *cmd, t_env *env)
 {
 	int		cmd_len;
 	char	*path_env;
@@ -32,17 +32,15 @@ char *get_path(char *cmd, t_env *env)
 		if (ft_strncmp(env->key, "PATH", 4) == 0)
 		{
 			path_env = ft_strdup(env->value);
-			break;
+			break ;
 		}
 		env = env->next;
 	}
 	if (path_env == NULL)
 		return (NULL);
 	path = get_path_token(cmd, path_env, cmd_len);
-	//free(path_env); // Free the allocated memory for path_env
 	return (path);
 }
-
 
 // Searches through each path in the PATH environment variable
 // Construct the full path to the command

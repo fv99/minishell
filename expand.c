@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 16:24:28 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/08/07 13:51:02 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/07 15:54:56 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,13 +104,13 @@ char	*expand_arg(char *str, int counter, t_env *env)
 /* 
 	returns value of variable name from environ
 */
-char *get_arg(char *argname, t_env *env)
+char	*get_arg(char *argname, t_env *env)
 {
 	while (env != NULL)
 	{
 		if (strcmp(env->key, argname) == 0)
-			return env->value;
+			return (env->value);
 		env = env->next;
 	}
-	return "";
+	return ("");
 }

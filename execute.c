@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 17:16:13 by phelebra          #+#    #+#             */
-/*   Updated: 2023/08/07 09:16:30 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/07 15:51:28 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 extern int	g_status;
 
-char	*get_executable_path(t_parsed *cmd, t_env *env) // change to struct evn
+char	*get_executable_path(t_parsed *cmd, t_env *env)
 {
 	char	*path;
 
