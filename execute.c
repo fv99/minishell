@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 17:16:13 by phelebra          #+#    #+#             */
-/*   Updated: 2023/08/01 17:22:02 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/07 09:16:30 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,14 @@
 
 extern int	g_status;
 
-char	*get_executable_path(t_parsed *cmd, char **envp)
+char	*get_executable_path(t_parsed *cmd, t_env *env) // change to struct evn
 {
 	char	*path;
 
 	if (cmd->args[0][0] == '/')
 		path = ft_strdup(cmd->args[0]);
 	else
-		path = get_path(cmd->args[0], envp);
+		path = get_path(cmd->args[0], env);
 	return (path);
 }
 
@@ -86,7 +86,7 @@ int	execute(t_parsed *cmd, char **envp, t_env *env)
 
 	if (check_builtins(cmd, env))
 		return (1);
-	path = get_executable_path(cmd, envp);
+	path = get_executable_path(cmd, env);
 	fork_and_exec(cmd, envp, path);
 	free(path);
 	return (g_status);

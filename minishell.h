@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/08/02 14:03:44 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/07 09:16:53 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ void		sigint_handler(int sig);
 int			execute(t_parsed *cmd, char **envp, t_env *env);
 
 // execute.c
-char		*get_executable_path(t_parsed *cmd, char **envp);
+char		*get_executable_path(t_parsed *cmd, t_env *env);
 void		handle_child_process(t_parsed *cmd, char **envp, char *path);
 void		handle_parent_process(pid_t pid, t_parsed *cmd);
 void		fork_and_exec(t_parsed *cmd, char **envp, char *path);
@@ -201,7 +201,7 @@ void		parent_process(t_parsed *curr, pid_t pid, int *pid_fd, char *path);
 void		child_process(t_parsed *curr, char **envp, int *pid_fd, char *path);
 
 //path.c
-char		*get_path(char *cmd, char **envp);
+char		*get_path(char *cmd, t_env *env);
 char		*get_path_token(char *cmd, char *path_env, int cmd_len);
 
 #endif
