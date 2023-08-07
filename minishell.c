@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/08/07 11:19:33 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/07 12:37:24 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	shell_loop(t_env *env)
 
 	g_status = 0;
 	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		save_fd = dup(STDIN_FILENO);
