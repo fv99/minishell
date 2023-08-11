@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 15:01:41 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/08/01 17:48:04 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/07 13:53:56 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 		<< will be interpreted as {<, <} and vice versa for >>
 		parser should handle this
 */
-char	**lexer(char *s, char **envp)
+char	**lexer(char *s, t_env *env)
 {
 	char	**tokenized;
 	char	**opt_split;
@@ -44,7 +44,7 @@ char	**lexer(char *s, char **envp)
 	i = -1;
 	while (tokenized && tokenized[++i])
 	{
-		tokenized[i] = expand_args(&tokenized[i], envp);
+		tokenized[i] = expand_args(&tokenized[i], env);
 		opt_split = tokenize_opts(tokenized[i], "<|>");
 		ft_matrix_replace_in(&tokenized, opt_split, i);
 		i += ft_matrixlen(opt_split) - 1;

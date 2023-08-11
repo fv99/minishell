@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:18:18 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/08/02 14:03:44 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/07 13:55:14 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ typedef struct s_fill_list_vars
 }	t_fill_list_vars;
 
 // lexer_1.c
-char		**lexer(char *s, char **envp);
+char		**lexer(char *s, t_env *env);
 char		**tokenize(char *src, char *delims);
 int			count_words(char *s, char *delims, t_lexer *lex);
 void		skip_and_parse(char *s, char *delims, t_lexer *lex);
@@ -102,12 +102,12 @@ int			count_words_opts(char *s, char *delims, t_lexer *lex);
 char		**fill_array_opts(char **ret, char *s, char *delims, t_lexer *lex);
 
 // expand.c 
-char		*expand_args(char **str_ptr, char **envp);
+char		*expand_args(char **str_ptr, t_env *env);
 t_arg		get_argname_and_len(char *str, int counter);
 char		*determine_arg_and_create_str(char *str, int counter,
-				t_arg arg_data, char **envp);
-char		*expand_arg(char *str, int counter, char **envp);
-char		*get_arg(char *argname, char **envp);
+				t_arg arg_data, t_env *env);
+char		*expand_arg(char *str, int counter, t_env *env);
+char		*get_arg(char *argname, t_env *env);
 
 // fill_list.c
 void		init_fill_list_vars(t_fill_list_vars *fl_vars);
@@ -149,7 +149,7 @@ void		sigint_handler(int sig);
 int			execute(t_parsed *cmd, char **envp, t_env *env);
 
 // execute.c
-char		*get_executable_path(t_parsed *cmd, char **envp);
+char		*get_executable_path(t_parsed *cmd, t_env *env);
 void		handle_child_process(t_parsed *cmd, char **envp, char *path);
 void		handle_parent_process(pid_t pid, t_parsed *cmd);
 void		fork_and_exec(t_parsed *cmd, char **envp, char *path);
@@ -196,12 +196,12 @@ int			builtin_unset(char **args, t_env **env);
 // pipex.c
 t_parsed	*get_infile1(t_parsed *node, char **args, int *i);
 t_parsed	*get_infile2(t_parsed *node, char **args, int *i);
-void		pipex2(t_parsed *curr, char **envp);
+void		pipex2(t_parsed *curr, char **envp, t_env *env);
 void		parent_process(t_parsed *curr, pid_t pid, int *pid_fd, char *path);
 void		child_process(t_parsed *curr, char **envp, int *pid_fd, char *path);
 
 //path.c
-char		*get_path(char *cmd, char **envp);
+char		*get_path(char *cmd, t_env *env);
 char		*get_path_token(char *cmd, char *path_env, int cmd_len);
 
 #endif

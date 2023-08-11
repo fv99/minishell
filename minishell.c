@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 15:56:26 by x230              #+#    #+#             */
-/*   Updated: 2023/08/01 17:16:31 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/07 13:55:11 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,13 @@ void	process_line(char *line, char **environ, t_env *env)
 	t_parsed	*head;
 
 	add_history(line);
-	ebloid = lexer(line, environ);
-	head = fill_list(ebloid);
-	execute_commands(head, environ, env);
-	free_array(ebloid);
+	ebloid = lexer(line, env);
+	if (ebloid != NULL)
+	{
+		head = fill_list(ebloid);
+		execute_commands(head, environ, env);
+		free_array(ebloid);
+	}
 }
 
 void	shell_loop(t_env *env)
@@ -37,6 +40,7 @@ void	shell_loop(t_env *env)
 
 	g_status = 0;
 	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		save_fd = dup(STDIN_FILENO);
@@ -75,7 +79,7 @@ void	execute_commands(t_parsed *head, char **envp, t_env *env)
 	{
 		next = current->next;
 		if (current->op == PIPE)
-			pipex2(current, envp);
+			pipex2(current, envp, env);
 		else
 			execute(current, envp, env);
 		free(current->args);
