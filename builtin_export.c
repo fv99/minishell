@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/02 13:56:00 by phelebra          #+#    #+#             */
-/*   Updated: 2023/08/02 14:30:09 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/11 13:41:05 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ t_env	*create_env_node(char *key, char *value)
 {
 	t_env	*new_node;
 
+	if (value == NULL)
+		value = strdup(" ");
 	new_node = (t_env *)malloc(sizeof(t_env));
 	if (new_node == NULL)
 	{
@@ -73,6 +75,8 @@ int	builtin_export(char **args, t_env **env)
 	}
 	key = strtok(args[1], "=");
 	value = strtok(NULL, "=");
+	if (value == NULL)
+		value = strdup(" ");
 	temp = find_env_key(*env, key);
 	if (temp != NULL)
 	{
@@ -83,6 +87,5 @@ int	builtin_export(char **args, t_env **env)
 	new_node = create_env_node(key, value);
 	if (new_node == NULL)
 		return (1);
-	add_env_node(env, new_node);
-	return (1);
+	return (add_env_node(env, new_node), 1);
 }

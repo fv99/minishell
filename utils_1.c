@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 12:46:54 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/08/11 11:25:16 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/11 13:42:46 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ char	*ft_strcpy(char *s1, char *s2)
 int	ft_strcmp(char *s1, char *s2)
 {
 	int	i;
-	
+
 	if (s1 == NULL || s2 == NULL)
 	{
 		return (-1);
