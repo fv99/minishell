@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 17:16:13 by phelebra          #+#    #+#             */
-/*   Updated: 2023/08/07 15:51:28 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/11 11:23:29 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,15 @@ extern int	g_status;
 char	*get_executable_path(t_parsed *cmd, t_env *env)
 {
 	char	*path;
-
-	if (cmd->args[0][0] == '/')
-		path = ft_strdup(cmd->args[0]);
-	else
-		path = get_path(cmd->args[0], env);
-	return (path);
+	if (cmd->args[0] != NULL)
+	{
+		if (cmd->args[0][0] == '/')
+			path = ft_strdup(cmd->args[0]);
+		else
+			path = get_path(cmd->args[0], env);
+		return (path);
+	}
+	return (NULL);
 }
 
 void	handle_child_process(t_parsed *cmd, char **envp, char *path)
@@ -87,7 +90,10 @@ int	execute(t_parsed *cmd, char **envp, t_env *env)
 	if (check_builtins(cmd, env))
 		return (1);
 	path = get_executable_path(cmd, env);
-	fork_and_exec(cmd, envp, path);
-	free(path);
+	if (path != NULL)
+	{
+		fork_and_exec(cmd, envp, path);
+		free(path);
+	}
 	return (g_status);
 }
