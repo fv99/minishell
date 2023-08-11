@@ -6,7 +6,7 @@
 /*   By: phelebra <xhelp00@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/12 13:33:44 by fvonsovs          #+#    #+#             */
-/*   Updated: 2023/08/07 11:02:39 by phelebra         ###   ########.fr       */
+/*   Updated: 2023/08/11 14:39:18 by phelebra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,8 @@ void	child_process(t_parsed *curr, char **envp, int *pid_fd, char *path)
 		dup2(pid_fd[1], STDOUT_FILENO);
 	close(pid_fd[1]);
 	execve(path, curr->args, envp);
-	free(path);
+	if (path != NULL)
+		free(path);
 }
 
 void	parent_process(t_parsed *curr, pid_t pid, int *pid_fd, char *path)
@@ -93,7 +94,8 @@ void	parent_process(t_parsed *curr, pid_t pid, int *pid_fd, char *path)
 	waitpid(pid, &g_status, WUNTRACED);
 	if (WIFEXITED(g_status) && WEXITSTATUS(g_status) == EXEC_ERROR)
 		ft_printf("Command not found: %s \n", curr->args[0]);
-	free(path);
+	if (path != NULL)
+		free(path);
 }
 
 void	pipex2(t_parsed *curr, char **envp, t_env *env)
@@ -102,10 +104,14 @@ void	pipex2(t_parsed *curr, char **envp, t_env *env)
 	int		pid_fd[2];
 	char	*path;
 
-	if (curr->args[0][0] == '/')
-		path = ft_strdup(curr->args[0]);
-	else
-		path = get_path(curr->args[0], env);
+	path = NULL;
+	if (curr->args[0] != NULL)
+	{
+		if (curr->args[0][0] == '/')
+			path = ft_strdup(curr->args[0]);
+		else
+			path = get_path(curr->args[0], env);
+	}
 	if (pipe(pid_fd) == -1)
 		you_fucked_up("Pipe error", 9);
 	pid = fork();
